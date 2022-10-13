@@ -295,11 +295,11 @@ input::-moz-focus-inner {
 
 /* Create an active/current tablink class */
 .tab button.active {
-    background-color: #b088ff !important;
+    background-color: #202614 !important;
 }
 
 .active {
-    color: #b088ff !important;
+    color: #202614 !important;
 }
 
 /* Style the tab content */

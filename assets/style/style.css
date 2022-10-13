@@ -146,9 +146,9 @@ input::-moz-focus-inner {
 }
 
 .large-box {
-    background: rgba(43, 9, 80, 0.55);
+    background: rgba(67,115,66,1);
     border-radius: 8px;
-    border-color: #6222ab;
+    border-color: #232614;
     border-width: 1px;
     border-style: solid;
     margin: 5px;
@@ -156,7 +156,7 @@ input::-moz-focus-inner {
 
 .large-box:hover {
     background: linear-gradient(217deg, rgb(51, 0, 153, 0.1), rgb(34, 0, 102, 0.3) 70.71%);
-    border-color: #763acf;
+    border-color: #232614;
 
 }
 
@@ -1414,7 +1414,7 @@ a {
         padding-top: 20px;
         height: 250px;
         /*background: linear-gradient(217deg, rgb(51, 0, 153, 0.1), rgb(34, 0, 102, 0.3) 70.71%);*/
-        border-color: #763acf;
+        border-color: #232614;
     }
 
     #title-address-box {

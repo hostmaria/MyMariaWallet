@@ -735,7 +735,7 @@ input::-moz-focus-inner {
     margin-bottom: 20px;
 }
 
-/*PIVX WARNINGS*/
+/*MARIA WARNINGS*/
 .warning-message {
     display: none;
     background-color: #9021fe;
@@ -761,7 +761,7 @@ input::-moz-focus-inner {
     border-color: #8300ff;
 }
 
-/*PIVX TEXT CUSTOMS*/
+/*MARIA TEXT CUSTOMS*/
 .pivx-bold-title {
     line-height: 1.35em;
     font-size: calc(37.88235px + .70588vw);
@@ -788,7 +788,7 @@ input::-moz-focus-inner {
     text-align: center;
 }
 
-/*PIVX FEATURES SECTION*/
+/*MARIA FEATURES SECTION*/
 .pivx-feature-father {
     margin-top: 90px;
 }
@@ -961,13 +961,13 @@ a {
     border: none;
 }
 
-/*PIVX DONATION SECTION*/
+/*MARIA DONATION SECTION*/
 .donation-section {
     margin-top: 30px;
     margin-bottom: 80px;
 }
 
-/*PIVX DASHBOARD*/
+/*MARIA DASHBOARD*/
 .dashboard-item {
     background: rgba(43, 9, 80, .75);
     border-radius: 6px;

@@ -1,5 +1,5 @@
 <h2 align="center">
-  Send, Stake and Receive with PIVX's most universal wallet.
+  Send, Stake and Receive with MARIA's most universal wallet.
 </h2>
 
 <p align="center">
@@ -14,7 +14,7 @@
 
 ## Be your own Bank
 
-MPW is a completely [non-custodial](https://www.bitcoin.com/get-started/custodial-non-custodial-bitcoin-wallets/), client-side system, giving you absolute control over your funds, data, bandwidth and privacy... all of which are essential to easily-attainable **self-sovereignty**.
+MMW is a completely [non-custodial](https://www.bitcoin.com/get-started/custodial-non-custodial-bitcoin-wallets/), client-side system, giving you absolute control over your funds, data, bandwidth and privacy... all of which are essential to easily-attainable **self-sovereignty**.
 
 <br>
 
@@ -26,7 +26,7 @@ MPW is a completely [non-custodial](https://www.bitcoin.com/get-started/custodia
 
 ## Universal and Portable
 
-MPW is completely universal and portable, at both a user-experience level & protocol-level, MPW is interopable with much of the functionality within PIVX, while also being portable enough to run on almost **any device in the world**.
+MMW is completely universal and portable, at both a user-experience level & protocol-level, MMW is interopable with much of the functionality within PIVX, while also being portable enough to run on almost **any device in the world**.
 
 <br>
 
@@ -38,8 +38,8 @@ MPW is completely universal and portable, at both a user-experience level & prot
 
 ## Don't trust, Verify!
 
-MPW is completely free, open-source software ([FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software)), with absolute transparency in security, features, down to every letter of code.<br>
-Alongside total codebase availability, MPW allows you to totally bunker-down, with the ability to customize your experience in accordance to your [principles](https://en.wikipedia.org/wiki/Free_and_open-source_software#Four_essential_freedoms_of_Free_Software) & security desires.
+MMW is completely free, open-source software ([FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software)), with absolute transparency in security, features, down to every letter of code.<br>
+Alongside total codebase availability, MMW allows you to totally bunker-down, with the ability to customize your experience in accordance to your [principles](https://en.wikipedia.org/wiki/Free_and_open-source_software#Four_essential_freedoms_of_Free_Software) & security desires.
 
 <br>
 
@@ -51,7 +51,7 @@ Alongside total codebase availability, MPW allows you to totally bunker-down, wi
 
 ## By the Community, for the Community
 
-MPW is built with love by [PIVX Labs](https://github.com/PIVX-Labs), a micro-DAO of [awesome people](https://github.com/PIVX-Labs/MyPIVXWallet/graphs/contributors) that build both FOSS and Proprietary software for the PIVX community to enjoy.
+MMW is built with love by [PIVX Labs](https://github.com/PIVX-Labs), a micro-DAO of [awesome people](https://github.com/PIVX-Labs/MyPIVXWallet/graphs/contributors) that build both FOSS and Proprietary software for the PIVX community to enjoy.
 
 The mission of PIVX Labs is to accelerate the adoption & growth of PIVX as a currency, using awesomeness. Join the [PIVX Labs Discord](https://discord.gg/v57eCP4MMx) to meet us!
 

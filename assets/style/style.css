@@ -21,7 +21,7 @@ button {
 }
 
 body {
-    background-color: #232614;
+    background-color: #254A25;
     color: #f2f8fa;
 }
 
@@ -52,11 +52,11 @@ button {
     color: rgba(255, 255, 255, 0.65);
     border-radius: 15px;
     padding: 12px 25px 12px;
-    background-color: #380c6a;
+    background-color: #202614;
     border-style: solid;
     border-width: 1px;
     margin: 1px;
-    border-color: #7300ff;
+    border-color: #437342;
     text-align: center;
     font-size: 16px;
     outline: 0;
@@ -64,8 +64,8 @@ button {
 
 button:hover {
     color: rgba(255, 255, 255, 0.95);
-    background-color: #380c6a;
-    border-color: #380c6a;
+    background-color: #202614;
+    border-color: #202614;
     border-width: 1px;
     border-style: solid;
 }
@@ -74,7 +74,7 @@ button:focus,
 button:active {
     outline: none !important;
     box-shadow: none;
-    border-color: #7300ff;
+    border-color: #437342;
     border-width: 1px;
     border-style: solid;
 }

@@ -728,7 +728,7 @@ input::-moz-focus-inner {
 }
 
 .home-hero {
-    background: radial-gradient(45vw 80% at 90% 40%, rgba(162, 50, 255, .3), rgba(44, 11, 76, 0) 95%), linear-gradient(90deg, rgba(44, 11, 76, .9), rgba(80, 15, 131, .5) 60%, rgba(44, 11, 76, .9)), linear-gradient(35deg, rgba(44, 11, 76, .3), rgba(80, 15, 131, .3) 37%, rgba(44, 11, 76, .3) 0, rgba(80, 15, 131, .3) 76%, rgba(44, 11, 76, .3) 0, rgba(80, 15, 131, .3)), linear-gradient(90deg, #11290c, #274226 60%, #11290c);
+    background: radial-gradient(45vw 80% at 90% 40%, rgba(54, 215, 26, .3), rgba(39, 66, 38, 0) 95%), linear-gradient(90deg, rgba(39, 66, 38, .9), rgba(67, 115, 66, .5) 60%, rgba(39, 66, 38, .9)), linear-gradient(35deg, rgba(39, 66, 38, .3), rgba(67, 115, 66, .3) 37%, rgba(39, 66, 38, .3) 0, rgba(67, 115, 66, .3) 76%, rgba(39, 66, 38, .3) 0, rgba(67, 115, 66, .3)), linear-gradient(90deg, #11290c, #274226 60%, #11290c);
 }
 
 .title-section {

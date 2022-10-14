@@ -56,7 +56,7 @@ button {
     border-style: solid;
     border-width: 1px;
     margin: 1px;
-    border-color: #36d71a;
+    border-color: #1e750e;
     text-align: center;
     font-size: 16px;
     outline: 0;
@@ -74,7 +74,7 @@ button:focus,
 button:active {
     outline: none !important;
     box-shadow: none;
-    border-color: #36d71a;
+    border-color: #1e750e;
     border-width: 1px;
     border-style: solid;
 }
@@ -411,7 +411,7 @@ input::-moz-focus-inner {
 #address-box.large-box {
     width: 96% !important;
     margin: 0 auto;
-    background: linear-gradient(0.15turn, rgba(43, 9, 80, 0.45), rgba(43, 9, 80, 0.02));
+    background: linear-gradient(0.15turn, rgba(43, 160, 80, 0.6), rgba(43, 9, 80, 0.02));
 }
 
 /* -- Background -- */
@@ -552,8 +552,8 @@ input::-moz-focus-inner {
     width: 85% !important;
     height: 460px !important;
     ;
-    background: rgba(72, 2, 125, 0.60);
-    border: 1px solid #a366ff;
+    background: rgba(0, 120, 0, 0.80);
+    border: 1px solid #A5D383;
     border-radius: 8px;
     padding: 5px;
 }
@@ -582,7 +582,7 @@ input::-moz-focus-inner {
     display: block;
     height: 100px;
     max-width: 100% !important;
-    border-bottom: 1px solid #a366ff;
+    border-bottom: 1px solid #A5D383;
 }
 
 #pivx-price-box {
@@ -700,7 +700,7 @@ input::-moz-focus-inner {
     font-family: Montserrat, sans-serif;
     height: auto;
     padding: 14px 30px;
-    background: linear-gradient(183deg, #6AEA54, #36d71a);
+    background: linear-gradient(183deg, #2baa14, #1e750e);
     line-height: 1.25em;
     font: 15px Montserrat, sans-serif !important;
     letter-spacing: .025em;
@@ -878,7 +878,7 @@ input::-moz-focus-inner {
 }
 
 .purple-icon-link {
-    color: #6AEA54;
+    color: #2baa14;
 }
 
 .purple-icon-link,
@@ -969,7 +969,7 @@ a {
 
 /*PIVX DASHBOARD*/
 .dashboard-item {
-    background: rgba(43, 9, 80, .75);
+    background: rgba(67, 115, 66, 1);
     border-radius: 6px;
     padding: 40px;
     padding-right: 15%;
@@ -1011,7 +1011,7 @@ a {
     width: 75px;
     max-height: 75px;
     padding: 0;
-    fill: #6AEA54;
+    fill: #2baa14;
 }
 
 .dashboard-title {
@@ -1027,7 +1027,7 @@ a {
     font-size: 14px !important;
     padding-top: 4px;
     padding-bottom: 4px;
-    background: #521685;
+    background: #274226;
     border: none;
     resize: none;
     color: white;
@@ -1799,7 +1799,7 @@ a {
         padding: 30px 20px;
         text-align: center;
         width: 100%;
-        border-bottom: 1px solid #a366ff;
+        border-bottom: 1px solid #A5D383;
     }
 
     #stake-title,

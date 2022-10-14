@@ -21,7 +21,7 @@ button {
 }
 
 body {
-    background-color: #254A25;
+    background-color: #11290c;
     color: #f2f8fa;
 }
 
@@ -52,11 +52,11 @@ button {
     color: rgba(255, 255, 255, 0.65);
     border-radius: 15px;
     padding: 12px 25px 12px;
-    background-color: #202614;
+    background-color: #437342;
     border-style: solid;
     border-width: 1px;
     margin: 1px;
-    border-color: #437342;
+    border-color: #36d71a;
     text-align: center;
     font-size: 16px;
     outline: 0;
@@ -64,8 +64,8 @@ button {
 
 button:hover {
     color: rgba(255, 255, 255, 0.95);
-    background-color: #202614;
-    border-color: #202614;
+    background-color: #437342;
+    border-color: #437342;
     border-width: 1px;
     border-style: solid;
 }
@@ -74,7 +74,7 @@ button:focus,
 button:active {
     outline: none !important;
     box-shadow: none;
-    border-color: #437342;
+    border-color: #36d71a;
     border-width: 1px;
     border-style: solid;
 }
@@ -118,7 +118,7 @@ button:active {
 }
 
 .navButton:hover {
-    color: #334758 !important;
+    color: #274226 !important;
 }
 
 .alert-danger {
@@ -146,9 +146,9 @@ input::-moz-focus-inner {
 }
 
 .large-box {
-    background: rgba(67,115,66,1);
+    background: rgba(43, 9, 80, 0.55);
     border-radius: 8px;
-    border-color: #232614;
+    border-color: #2baa14;
     border-width: 1px;
     border-style: solid;
     margin: 5px;
@@ -156,7 +156,7 @@ input::-moz-focus-inner {
 
 .large-box:hover {
     background: linear-gradient(217deg, rgb(51, 0, 153, 0.1), rgb(34, 0, 102, 0.3) 70.71%);
-    border-color: #232614;
+    border-color: #2baa14;
 
 }
 
@@ -290,16 +290,16 @@ input::-moz-focus-inner {
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-    background-color: #334758 !important;
+    background-color: #274226 !important;
 }
 
 /* Create an active/current tablink class */
 .tab button.active {
-    background-color: #202614 !important;
+    background-color: #A5D383 !important;
 }
 
 .active {
-    color: #202614 !important;
+    color: #A5D383 !important;
 }
 
 /* Style the tab content */
@@ -318,7 +318,7 @@ input::-moz-focus-inner {
 .frame {
     display: block;
     margin: 0 auto;
-    background: #2B0950BF;
+    background: #274226BF;
 }
 
 /* DASHBOARD */
@@ -332,7 +332,7 @@ input::-moz-focus-inner {
     display: block;
     width: 100%;
     height: 87%;
-    border: 1px #4b1282 solid;
+    border: 1px #274226 solid;
     border-radius: 8px;
     box-shadow: 2px 2px 15px 2px #4b1271;
     margin: 0 0 280px 0;
@@ -662,7 +662,7 @@ input::-moz-focus-inner {
     width: 100%;
     padding: 10px;
     border-top: solid #521186 1px;
-    background-color: #2b09508c;
+    background-color: #2742268c;
 }
 
 .footer {
@@ -735,7 +735,7 @@ input::-moz-focus-inner {
     margin-bottom: 20px;
 }
 
-/*MARIA WARNINGS*/
+/*PIVX WARNINGS*/
 .warning-message {
     display: none;
     background-color: #9021fe;
@@ -757,11 +757,11 @@ input::-moz-focus-inner {
 
 .alert-danger {
     color: #fff;
-    background-color: #4b1282;
+    background-color: #274226;
     border-color: #8300ff;
 }
 
-/*MARIA TEXT CUSTOMS*/
+/*PIVX TEXT CUSTOMS*/
 .pivx-bold-title {
     line-height: 1.35em;
     font-size: calc(37.88235px + .70588vw);
@@ -788,7 +788,7 @@ input::-moz-focus-inner {
     text-align: center;
 }
 
-/*MARIA FEATURES SECTION*/
+/*PIVX FEATURES SECTION*/
 .pivx-feature-father {
     margin-top: 90px;
 }
@@ -961,13 +961,13 @@ a {
     border: none;
 }
 
-/*MARIA DONATION SECTION*/
+/*PIVX DONATION SECTION*/
 .donation-section {
     margin-top: 30px;
     margin-bottom: 80px;
 }
 
-/*MARIA DASHBOARD*/
+/*PIVX DASHBOARD*/
 .dashboard-item {
     background: rgba(43, 9, 80, .75);
     border-radius: 6px;
@@ -1414,7 +1414,7 @@ a {
         padding-top: 20px;
         height: 250px;
         /*background: linear-gradient(217deg, rgb(51, 0, 153, 0.1), rgb(34, 0, 102, 0.3) 70.71%);*/
-        border-color: #232614;
+        border-color: #2baa14;
     }
 
     #title-address-box {

@@ -56,7 +56,7 @@ button {
     border-style: solid;
     border-width: 1px;
     margin: 1px;
-    border-color: #1e750e;
+    border-color: #8A691B;
     text-align: center;
     font-size: 16px;
     outline: 0;
@@ -74,7 +74,7 @@ button:focus,
 button:active {
     outline: none !important;
     box-shadow: none;
-    border-color: #1e750e;
+    border-color: #8A691B;
     border-width: 1px;
     border-style: solid;
 }
@@ -148,7 +148,7 @@ input::-moz-focus-inner {
 .large-box {
     background: rgba(43, 9, 80, 0.55);
     border-radius: 8px;
-    border-color: #2baa14;
+    border-color: #ae8422;
     border-width: 1px;
     border-style: solid;
     margin: 5px;
@@ -156,7 +156,7 @@ input::-moz-focus-inner {
 
 .large-box:hover {
     background: linear-gradient(217deg, rgb(51, 0, 153, 0.1), rgb(34, 0, 102, 0.3) 70.71%);
-    border-color: #2baa14;
+    border-color: #ae8422;
 
 }
 
@@ -700,7 +700,7 @@ input::-moz-focus-inner {
     font-family: Montserrat, sans-serif;
     height: auto;
     padding: 14px 30px;
-    background: linear-gradient(183deg, #2baa14, #1e750e);
+    background: linear-gradient(183deg, #ae8422, #8A691B);
     line-height: 1.25em;
     font: 15px Montserrat, sans-serif !important;
     letter-spacing: .025em;
@@ -878,7 +878,7 @@ input::-moz-focus-inner {
 }
 
 .purple-icon-link {
-    color: #2baa14;
+    color: #ae8422;
 }
 
 .purple-icon-link,
@@ -1011,7 +1011,7 @@ a {
     width: 75px;
     max-height: 75px;
     padding: 0;
-    fill: #2baa14;
+    fill: #ae8422;
 }
 
 .dashboard-title {
@@ -1414,7 +1414,7 @@ a {
         padding-top: 20px;
         height: 250px;
         /*background: linear-gradient(217deg, rgb(51, 0, 153, 0.1), rgb(34, 0, 102, 0.3) 70.71%);*/
-        border-color: #2baa14;
+        border-color: #ae8422;
     }
 
     #title-address-box {

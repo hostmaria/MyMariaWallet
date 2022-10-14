@@ -295,11 +295,11 @@ input::-moz-focus-inner {
 
 /* Create an active/current tablink class */
 .tab button.active {
-    background-color: #A5D383 !important;
+    background-color: #E8CD8D !important;
 }
 
 .active {
-    color: #A5D383 !important;
+    color: #E8CD8D !important;
 }
 
 /* Style the tab content */
@@ -553,7 +553,7 @@ input::-moz-focus-inner {
     height: 460px !important;
     ;
     background: rgba(174, 132, 34, 0.80);
-    border: 1px solid #A5D383;
+    border: 1px solid #E8CD8D;
     border-radius: 8px;
     padding: 5px;
 }
@@ -582,7 +582,7 @@ input::-moz-focus-inner {
     display: block;
     height: 100px;
     max-width: 100% !important;
-    border-bottom: 1px solid #A5D383;
+    border-bottom: 1px solid #E8CD8D;
 }
 
 #pivx-price-box {
@@ -1799,7 +1799,7 @@ a {
         padding: 30px 20px;
         text-align: center;
         width: 100%;
-        border-bottom: 1px solid #A5D383;
+        border-bottom: 1px solid #E8CD8D;
     }
 
     #stake-title,

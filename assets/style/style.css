@@ -661,7 +661,7 @@ input::-moz-focus-inner {
     bottom: 0;
     width: 100%;
     padding: 10px;
-    border-top: solid #521186 1px;
+    border-top: solid #274226 1px;
     background-color: #2742268c;
 }
 
@@ -682,8 +682,8 @@ input::-moz-focus-inner {
 }
 
 .navbarSpecial {
-    background: linear-gradient(90deg, #2c0b4c 12.5%, #500f83, #2c0b4c);
-    border-bottom-color: #521186;
+    background: linear-gradient(90deg, #11290c 12.5%, #274226, #11290c);
+    border-bottom-color: #274226;
     border-bottom-style: solid;
     border-bottom-width: 1px;
     position: fixed;
@@ -728,7 +728,7 @@ input::-moz-focus-inner {
 }
 
 .home-hero {
-    background: radial-gradient(45vw 80% at 90% 40%, rgba(162, 50, 255, .3), rgba(44, 11, 76, 0) 95%), linear-gradient(90deg, rgba(44, 11, 76, .9), rgba(80, 15, 131, .5) 60%, rgba(44, 11, 76, .9)), linear-gradient(35deg, rgba(44, 11, 76, .3), rgba(80, 15, 131, .3) 37%, rgba(44, 11, 76, .3) 0, rgba(80, 15, 131, .3) 76%, rgba(44, 11, 76, .3) 0, rgba(80, 15, 131, .3)), linear-gradient(90deg, #2c0b4c, #500f83 60%, #2c0b4c);
+    background: radial-gradient(45vw 80% at 90% 40%, rgba(162, 50, 255, .3), rgba(44, 11, 76, 0) 95%), linear-gradient(90deg, rgba(44, 11, 76, .9), rgba(80, 15, 131, .5) 60%, rgba(44, 11, 76, .9)), linear-gradient(35deg, rgba(44, 11, 76, .3), rgba(80, 15, 131, .3) 37%, rgba(44, 11, 76, .3) 0, rgba(80, 15, 131, .3) 76%, rgba(44, 11, 76, .3) 0, rgba(80, 15, 131, .3)), linear-gradient(90deg, #11290c, #274226 60%, #11290c);
 }
 
 .title-section {

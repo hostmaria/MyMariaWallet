@@ -700,7 +700,7 @@ input::-moz-focus-inner {
     font-family: Montserrat, sans-serif;
     height: auto;
     padding: 14px 30px;
-    background: linear-gradient(183deg, #9621ff, #7d21ff);
+    background: linear-gradient(183deg, #6AEA54, #36d71a);
     line-height: 1.25em;
     font: 15px Montserrat, sans-serif !important;
     letter-spacing: .025em;
@@ -794,7 +794,7 @@ input::-moz-focus-inner {
 }
 
 .pivx-feature-interior {
-    background: linear-gradient(90deg, #2b1542, #230f3c);
+    background: linear-gradient(90deg, #274226, #274226);
     padding: 25px;
     text-align: center;
     border-radius: 10px;
@@ -878,7 +878,7 @@ input::-moz-focus-inner {
 }
 
 .purple-icon-link {
-    color: #9621ff;
+    color: #6AEA54;
 }
 
 .purple-icon-link,
@@ -1011,7 +1011,7 @@ a {
     width: 75px;
     max-height: 75px;
     padding: 0;
-    fill: #9621ff;
+    fill: #6AEA54;
 }
 
 .dashboard-title {

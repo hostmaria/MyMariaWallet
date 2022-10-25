@@ -7,8 +7,7 @@ var networkEnabled = true;
 // A list of Labs-trusted explorers
 const arrExplorers = [
     // Display name      Blockbook-compatible API base
-    { name: "rockdev",   url: "https://explorer.rockdev.org" },
-    { name: "zkBitcoin", url: "https://zkbitcoin.com" }
+    { name: "maria",   url: "https://explorer.mariacoin.com" }
 ]
 
 var cExplorer = arrExplorers[0];

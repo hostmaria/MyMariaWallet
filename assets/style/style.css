@@ -38,6 +38,7 @@ pre {
 
 textarea,
 input {
+    font-family: monospace !important;
     background-color: #fff;
     border-style: dashed;
     border-width: 2px;
@@ -46,6 +47,10 @@ input {
     width: 100%;
     height: 43px;
     margin-bottom: 14px;
+}
+
+#privateKey {
+    text-align: center;
 }
 
 button {
@@ -248,6 +253,31 @@ input::-moz-focus-inner {
     -webkit-box-shadow: inset hsla(0, 0%, 100%, .25) 0 2px 2px, inset rgba(0, 0, 0, .6) 0 -1px 8px;
     box-shadow: inset 0 2px 2px hsla(0, 0%, 100%, .25), inset 0 -1px 8px rgba(0, 0, 0, .6);
 }
+
+.seed-phrase {
+    font-family: mono;
+    background-color: #00000014;
+    color: #8e21ff;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+/* a bootstrap override */
+.modal-footer {
+    display: block !important;
+}
+
+.inline-address {
+    font-family: mono;
+    background-color: #00000014;
+    color: #8e21ff;
+    margin: 10px;
+    padding: 3px;
+    border-radius: 8px;
+    display: inline;
+}
+
 
 #page-container {
     position: relative;
@@ -502,19 +532,20 @@ input::-moz-focus-inner {
     margin: 0;
     text-align: center;
 }
-
+#PrivateCipheredQR img,
 #PrivateQR img,
 #PublicQR img {
     width: 95px !important;
     height: 95px !important;
 }
-
+#PrivateCipheredTxt,
 #PrivateTxt {
     color: black;
     font-size: 12px !important;
     text-align: center;
     line-height: 20px;
 }
+
 
 /* -- Pubkey QR -- */
 
@@ -550,7 +581,7 @@ input::-moz-focus-inner {
     display: block;
     margin: 0 auto;
     width: 85% !important;
-    height: 460px !important;
+    height: 800px !important;
     ;
     background: rgba(174, 132, 34, 0.80);
     border: 1px solid #E8CD8D;
@@ -575,6 +606,18 @@ input::-moz-focus-inner {
     justify-content: space-evenly;
     min-height: 200px;
     width: 100%;
+}
+
+.staking-rewards-header {
+    height: 15%;
+    font-size: large;
+    overflow: hidden;
+
+}
+.staking-rewards-list {
+    overflow: auto;
+    font-size: large;
+    height: 85%;
 }
 
 #staking-rectangle {
@@ -1033,6 +1076,14 @@ a {
     color: white;
 }
 
+.export-key {
+    width: 100%;
+    padding-bottom: 36px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
 /* SEND */
 
 #sendNotice {
@@ -1083,7 +1134,7 @@ a {
     #genKeyWarning .pivx-button-big {
         margin-top: 20px;
     }
-
+    #PrivateCipheredQR img,
     #PrivateQR img,
     #PublicQR img {
         width: 90px !important;
@@ -1109,7 +1160,9 @@ a {
     #PrivateTxt {
         font-size: 25px;
     }
-
+    #PrivateCipheredTxt{
+        font-size: 25px;
+    }
     #PublicTxt {
         font-size: 25px;
     }
@@ -1121,7 +1174,9 @@ a {
     #PrivateTxt {
         font-size: 18px;
     }
-
+    #PrivateCipheredTxt{
+        font-size: 18px;
+    }
     #PublicTxt {
         font-size: 25px;
     }
@@ -1232,7 +1287,7 @@ a {
     #pubkey-box .pivx-button-big {
         width: 230px !important;
     }
-
+    #PrivateCipheredQR img,
     #PrivateQR img,
     #PublicQR img {
         width: 75px !important;
@@ -1271,6 +1326,9 @@ a {
 
     /* Main Wallet page */
     #PrivateTxt {
+        font-size: 17px;
+    }
+    #PrivateCipheredTxt{
         font-size: 17px;
     }
 
@@ -1341,7 +1399,7 @@ a {
     /* Stake page */
 
     .add-frame {
-        height: 720px !important;
+        height: 1000px !important;
     }
 
     .stake-box.large-box.col-md-4 {
@@ -1360,6 +1418,9 @@ a {
 
     /* Main Wallet page */
     #PrivateTxt {
+        font-size: 13px;
+    }
+    #PrivateCipheredTxt{
         font-size: 13px;
     }
 
@@ -1472,6 +1533,9 @@ a {
 
     /* Main Wallet page */
     #PrivateTxt {
+        font-size: 8px;
+    }
+    #PrivateCipheredTxt{
         font-size: 8px;
     }
 

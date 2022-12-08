@@ -46,24 +46,111 @@
   <script type="text/javascript" src="assets/bootstrap-4.5.0/js/jquery.js"></script>
   <script type="text/javascript" src="assets/bootstrap-4.5.0/js/bootstrap.js"></script>
   <script type="text/javascript" src="scripts/libs/jdenticon.min.js"></script>
+  <script>
+    // TRANSLATION
+
+    // We use this function to parse the UA lang in a safer way: for example, there's multiple `en` definitions
+    // ... but we shouldn't duplicate the language files, we can instead cut the affix (US, GB) and simply use 'en'.
+    // ... This logic may apply to other languages with such subsets as well, so take care of them here!
+    const arrLangsWithSubset = ['en'];
+    function parseUserAgentLang(strUA) {
+      if (arrLangsWithSubset.some(strLang => strUA.includes(strLang))) {
+        // Split the lang in to 'primary' and 'subset', only use the primary lang
+        return strUA.substring(0, 2);
+      }
+      // Otherwise, just use the full language spec
+      return strUA;
+    }
+
+    const strLang = parseUserAgentLang(window.navigator.userLanguage || window.navigator.language);
+
+    //When adding a lang remember to add it to the object translatableLanguages as well as here.
+    //When removing you do not have to remove from translatableLanguages
+    const arrActiveLangs = ['en', 'uwu'];
+
+    //Due to the need to switch language we need to load all the languages and then set the active one to the translation variable
+    for(i=0; i<arrActiveLangs.length; i++){
+      document.write('\x3Cscript src="locale/' + arrActiveLangs[i] + '/translation.js">\x3C/script>')
+    }
+  </script>
+
 
   <!--- IMPORTANT: CHAIN PARAMS BELOW, DO NOT EDIT UNLESS YOU'RE ABSOLUTELY CERTAIN YOU KNOW WHAT YOU'RE DOING  --->
   <script>
       // In most BTC-derived coins, the below parameters can be found in the 'src/chainparams.cpp' Mainnet configuration.
       // These below params share the same names as the CPP params, so finding and editing these is easy-peasy!
+      // <[network_byte] [32_byte_payload] [0x01] [4_byte_checksum]>
+      const PRIVKEY_BYTE_LENGTH = 38;
 
-      /* chainparams */
-      const PUBKEY_PREFIX  = "M";
-      const PUBKEY_ADDRESS = 50;
-      const SECRET_KEY     = 212;
-      const COIN = 1e8;
+      const COIN_DECIMALS = 8;
+      const COIN = 10**8;
 
+      /** The maximum gap (absence of transactions within a range of derived addresses) before an account search ends */
+      const MAX_ACCOUNT_GAP = 20;
+      
       /* Internal tweaking parameters */
       // A new encryption password must be 'at least' this long.
       const MIN_PASS_LENGTH = 6;
 
       // Cool stuff
       const donationAddress = "DLabsktzGMnsK5K9uRTMCF6NoYNY6ET4Bb";
+
+      /* chainparams */
+      const cChainParams = {
+          current: null,
+          main: {
+              collateralInSats   : 100000 * COIN,
+              isTestnet         : false,
+              TICKER            : "MARIA",
+              PUBKEY_PREFIX     : ["M"],
+              STAKING_PREFIX    : "S",
+              PUBKEY_ADDRESS    : 50,
+              SECRET_KEY        : 212,
+              BIP44_TYPE        : 1255033,
+              BIP44_TYPE_LEDGER : 1255033,
+	      MASTERNODE_PORT   : 47773,
+              // A list of Labs-trusted explorers
+              Explorers         : [
+                  // Display name      Blockbook-compatible API base
+                  { name: "rockdev",   url: "https://explorer.rockdev.org" },
+                  { name: "zkBitcoin", url: "https://zkbitcoin.com" }
+              ],
+	      Nodes: [
+		  { name: "duddino", url: "https://rpc.duddino.com/mainnet"}
+	      ],
+	      Consensus         : {
+                  // Network upgrades
+                  UPGRADE_V6_0  : undefined
+              },
+          },
+          testnet: {
+	      collateralInSats   : 100000 * COIN,
+              isTestnet         : true,
+              TICKER            : "tMARIA",
+              PUBKEY_PREFIX     : ["x","y"],
+              STAKING_PREFIX    : "W",
+              PUBKEY_ADDRESS    : 139,
+              SECRET_KEY        : 239,
+              BIP44_TYPE        : 1,
+              BIP44_TYPE_LEDGER : 1,
+	      MASTERNODE_PORT   : 51474,
+              // A list of Labs-trusted explorers
+              Explorers         : [
+                  // Display name      Blockbook-compatible API base
+                  { name: "rockdev",   url: "https://testnet.rockdev.org" }
+              ],
+	      Nodes: [
+		  { name: "duddino", url: "https://rpc.duddino.com/testnet"}
+	      ],
+	      Consensus         : {
+                  // Network upgrades
+                  UPGRADE_V6_0  : undefined
+              },
+          }
+      }
+      // Set default chain
+      cChainParams.current = cChainParams.main;
+
   </script>
 </head>
 
@@ -83,21 +170,24 @@
 
             <!-- MAIN NAVBAR -->
             <ul class="navbar-nav mr-auto ptr">
-              <li class="nav-item"><a id='start' class="nav-link tablinks" onclick="openTab(event, 'home')">Intro</a></li>
-              <li class="nav-item"><a class="nav-link tablinks" onclick="openTab(event, 'keypair')">Dashboard</a></li>
-              <li class="nav-item"><a id="txTab" class="nav-link tablinks" onclick="openTab(event, 'Transaction')">Send</a></li>
-              <li class="nav-item"><a id="stakeTab" class="nav-link tablinks" onclick="openTab(event, 'StakingTab')">Stake</a></li>
-              <li class="nav-item"><a class="nav-link tablinks" onclick="openTab(event, 'Settings');">Settings</a></li>
+              <li class="nav-item"><a id='start' class="nav-link tablinks" onclick="openTab(event, 'home')" data-i18n="navIntro">Intro</a></li>
+              <li class="nav-item"><a class="nav-link tablinks" onclick="openTab(event, 'keypair')" data-i18n="navDashboard">Dashboard</a></li>
+              <li class="nav-item"><a id="txTab" class="nav-link tablinks" onclick="openTab(event, 'Transaction')" data-i18n="navSend">Send</a></li>
+              <li class="nav-item"><a id="stakeTab" class="nav-link tablinks" onclick="openTab(event, 'StakingTab')" data-i18n="navStake">Stake</a></li>
+              <li class="nav-item"><a id="masternodeTab" class="nav-link tablinks" onclick="openTab(event, 'Masternode')" data-i18n="navMasternode">Masternode</a></li>
+              <li class="nav-item"><a id="governanceTab" class="nav-link tablinks" onclick="openTab(event, 'Governance')" data-i18n="navGovernance">Governance</a></li>
+              <li class="nav-item"><a class="nav-link tablinks" onclick="openTab(event, 'Settings');" data-i18n="navSettings">Settings</a></li>
+
             </ul>
 
             <!-- SIDE NAVBAR -->
             <div class="form-inline my-2 my-lg-0">
               <ul class="navbar-nav mr-auto ptr">
-                <li class="nav-item"><a class="nav-link tablinks active" id="Network" onclick="toggleNetwork()"></a></li>
-                <li class="nav-item"><a class="nav-link tablinks active" id="Debug" onclick="toggleDebug()"></a></li>
+                <li class="nav-item"><a class="nav-link tablinks active" id="Testnet" onclick="toggleTestnet()" data-i18n="navTestnet"><b>Testnet Mode On</b></a></li>
+                <li class="nav-item"><a class="nav-link tablinks active" id="Network" onclick="toggleNetwork()"><span data-i18n="navNetwork">Network:</span> <span id="NetworkE" data-i18n="enabled">Enabled</span><span id="NetworkD" data-i18n="disabled">Disabled</span></a></li>
+                <li class="nav-item"><a class="nav-link tablinks active" id="Debug" onclick="toggleDebug()"><b>DEBUG MODE ON</b></a></li>
               </ul>
             </div>
-
           </div>
         </div>
       </nav>
@@ -133,7 +223,55 @@
         </div>
       </div>
       <br>
-      <!-- // QR MODAL -->
+      <!-- // MNEMONIC MODAL -->
+      <div class="modal fade" id="mnemonicModal" tabindex="-1" role="dialog" aria-labelledby="qrModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body center-text">
+              <p id="ModalMnemonicLabel" class="modal-label"></p>
+              <div id="ModalMnemonic" class="auto-fit">
+                This is your seed phrase:
+                <b>
+                  <div class="seed-phrase noselect" id="ModalMnemonicContent">
+                    <!-- Test1 Test2 Test1 Test2 Test1 Test2 Test1 Test2 Test1 Test2 Test1 Test2 -->
+                  </div>
+                </b>
+                <br>
+                Write it down somewhere. You'll only see this <b>once!</b>
+                <br>
+                Anyone with a copy of it can access <b>all</b> of your funds.
+                <br>
+                <b>Do NOT share it with anybody</b>.
+                <br><br>
+                <a href="https://www.ledger.com/blog/how-to-protect-your-seed-phrase" target="_blank"><i>It is <b>NOT</b> advised to store this digitally.</i></a>
+                <br><br>
+              </div>
+	      <div class="modal-footer">
+		  <button type="button" id="modalMnemonicConfirmButton" class="pivx-button-big">I have written down my seed phrase</button>
+	      </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <br>
+      <!-- // CONFIRM MODAL -->
+    <div class="modal" id="confirmModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px">
+          <div class="modal-content">
+            <div class="modal-header" id="confirmModalHeader">
+              <h3 class="modal-title" id="confirmModalTitle" style="text-align: center;width: 100%;color: #8e21ff;">Insert cool popup title</h3>
+            </div>
+            <div id="confirmModalContent" class="modal-body center-text">
+              <!-- JS populated modal content -->
+            </div>
+            <div class="modal-footer" hidden="true" id="confirmModalButtons">
+              <button type="button" id="confirmModalConfirmButton" class="pivx-button-big" style="float: right">Confirm</button>
+              <button type="button" id="confirmModalCancelButton" class="pivx-button-big" style="float: right; opacity: 0.7;">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
       <div class="container">
         <div class="row no-gutters">
@@ -230,8 +368,9 @@
 
               <!-- MARIA DONATION SECTION -->
               <div class="col-md-12 donation-section float-left rm-pd text-center">
-                  <button class="pivx-button-big" onclick="openDonatePage()">
-                            <span class="buttoni-text">Donate - Pay with Maria Web Wallet</span>
+                  <button class="pivx-button-big" onclick="guiPreparePayment(donationAddress)">
+                            <span class="buttoni-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 70"><path d="M3.497 25.717C1.401 25.588 0 23.847 0 21.753v-2.535c0-.775.149-1.593.925-1.593h22.719c2.173 0 3.941 1.861 3.941 4.034 0 2.174-1.769 3.988-3.941 3.988l-20.207.048c-.02 0 .08.023.06.022z"></path><path d="M5.229 69.625C4.455 69.625 4 68.494 4 67.719V38.661c0-1.911 1.447-3.731 3.258-3.989.175-.029.285-.047.483-.047h21.525c7.137 0 12.751-5.86 12.751-13.027 0-7.096-5.528-12.841-12.586-13.177-.002 0-.671.016-1.41.016l-20.335.066C5.529 8.373 4 6.652 4 4.558V2.023C4 1.247 4.407.625 5.183.625h24.059c11.57 0 20.654 9.546 20.706 21.104 0 9.378-6.307 17.727-15.337 20.311-1.622.445-3.122.705-4.735.778L12 42.842v22.485c0 2.156-2.141 4.298-4.235 4.298H5.229z"></path></svg></span>
+                            <span class="buttoni-text" data-i18n="buttonDonate">Donate - Pay with MyMARIAWallet</span>
                             <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
                   </button>
 
@@ -246,7 +385,7 @@
 
               <!-- MARIA TITLE SECTION -->
               <div class="col-md-12 title-section rm-pd">
-                  <h3 class="pivx-bold-title center-text">Dashboard</h3>
+                  <h3 class="pivx-bold-title center-text" data-i18n="dashboardTitle">Dashboard</h3>
               </div>
               <!-- // MARIA TITLE SECTION -->
 
@@ -261,13 +400,14 @@
                   </div>
 
                   <div class="col-md-12 dashboard-title">
-                    <h3 class="pivx-bold-title-smaller"><span>Create a</span>New Wallet</h3>
-                    <p>This will create a new, random MARIA wallet that will contain no initial funds, you may transfer to-and-from this wallet with ease.</p>
+                    <h3 class="pivx-bold-title-smaller"><span data-i18n="dCardOneTitle">Create a</span> <div data-i18n="dCardOneSubTitle">New Wallet</div></h3>
+                    <p data-i18n="dCardOneDesc">This will create a new, random PIVX wallet that will contain no initial funds, you may transfer to-and-from this wallet with ease.</p>
                   </div>
 
 
                   <button class="pivx-button-big" onclick="generateWallet()">
-                              <span class="buttoni-text">Create A New Wallet</span>
+                              <span class="buttoni-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 70"><path d="M3.497 25.717C1.401 25.588 0 23.847 0 21.753v-2.535c0-.775.149-1.593.925-1.593h22.719c2.173 0 3.941 1.861 3.941 4.034 0 2.174-1.769 3.988-3.941 3.988l-20.207.048c-.02 0 .08.023.06.022z"></path><path d="M5.229 69.625C4.455 69.625 4 68.494 4 67.719V38.661c0-1.911 1.447-3.731 3.258-3.989.175-.029.285-.047.483-.047h21.525c7.137 0 12.751-5.86 12.751-13.027 0-7.096-5.528-12.841-12.586-13.177-.002 0-.671.016-1.41.016l-20.335.066C5.529 8.373 4 6.652 4 4.558V2.023C4 1.247 4.407.625 5.183.625h24.059c11.57 0 20.654 9.546 20.706 21.104 0 9.378-6.307 17.727-15.337 20.311-1.622.445-3.122.705-4.735.778L12 42.842v22.485c0 2.156-2.141 4.298-4.235 4.298H5.229z"></path></svg></span>
+                              <span class="buttoni-text" data-i18n="dCardOneButton">Create A New Wallet</span>
                               <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
                     </button>
                 </div>
@@ -306,7 +446,7 @@
                             <div id="window-icon-piv">
                                 <div id="piv-ring"></div>
                                 <div id="number-piv">
-                                    <p id="guiBalanceBox"><b id="guiBalance">~</b> MARIA</p>
+                                    <p id="guiBalanceBox"><b id="guiBalance">~</b> <span id="guiBalanceTicker">MARIA</span></p>
                                 </div>
                             </div>
                             <div id="bal-title">
@@ -327,23 +467,17 @@
                                 <div id="address-info">
                                     <b id="guiAddress">~</b>
                                     <b id="guiQRButton">
-                                        <i data-toggle="modal" data-target="#qrModal" class="fas fa-qrcode fa-stacked-ptr"></i>
-                                        <i onclick="toClipboard('guiAddress', this)" id="guiAddressCopy" class="fas fa-clipboard fa-stacked-ptr"></i>
+                                      <i data-toggle="modal" data-target="#qrModal" class="fas fa-qrcode fa-stacked-ptr"></i>
+                                      <i id="guiNewAddress" onclick="getNewAddress({updateGUI: true, verify: true})" class="fas fa-sync fa-stacked-ptr"></i>
+                                      <i onclick="toClipboard('guiAddress', this)" id="guiAddressCopy" class="fas fa-clipboard fa-stacked-ptr"></i>
+                                      <i id="guiExportWallet" onclick="toggleExportUI()" class="fas fa-share fa-stacked-ptr"></i>
                                     </b>
                                 </div>
                             </div>
-                            <div id="pubkey-padd">
-                                <div id="pubkey-box" class="col-md-4 desktop-pubkey">
-                                  <div id="PrivateQR" class="margin-padded-qr" style="display: none;"><img src="" width="82" height="82"></div>
-                                  <div id="PublicQR" class="margin-padded-qr" style="display: block;"><img src="" width="82" height="82"></div>
-                                  <textarea id="PrivateTxt" style="display: none;" disabled="" class="form-control private-key-area"></textarea>
-                                  <button class="pivx-button-big" onclick="toggleKeyView()">
-                                      <span class="buttoni-icon"><i class="far fa-eye fa-tiny-margin"></i></span>
-                                      <span class="buttoni-text" id="guiViewKey">Pubkey QR</span>
-                                      <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
-                                  </button>
-                                </div>
-                            </div>
+                          <div id="exportKeyDiv" hidden="true">
+                            Your private key:
+                            <div class="export-key private-key-area" id="exportKeyText"> </div>
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -361,21 +495,59 @@
                   </div>
 
                   <div class="col-md-12 dashboard-title">
-                    <h3 class="pivx-bold-title" style="font-size:38px;"><span>Create a new</span>Vanity Wallet</h3>
-                    <span class="badge badge-warning">Experimental</span>
-                    <p>This will create a MARIA wallet with a customized prefix of your choosing, requiring more processing power to generate such addresses, it is recommended to generate a prefix of less than 6 characters, for example: "DAD" is a possible address prefix.</p>
+                    <h3 class="pivx-bold-title" style="font-size:38px;"><span data-i18n="dCardTwoTitle" >Create a new</span> <div data-i18n="dCardTwoSubTitle">Vanity Wallet</div></h3>
+                    <span class="badge badge-warning" data-i18n="experimental" >Experimental</span>
+                    <p data-i18n="dCardTwoDesc">This will create a PIVX wallet with a customized prefix of your choosing, requiring more processing power to generate such addresses, it is recommended to generate a prefix of less than 6 characters, for example: "DAD" is a possible address prefix.</p>
+                    <span style="opacity: 0.75; font-size: small;">*Note: Generated addresses will automatically be preceded by the network prefix: <b id='prefixNetwork'></b></span></p>
                   </div>
 
 
-                  <input style="display:none;" type="text" id='prefix' placeholder="Address Prefix" onkeyup="checkVanity()">
+                  <input class="center-text" style="display:none;" type="text" id='prefix' placeholder="Address Prefix" onkeypress="checkVanity()">
 
                   <button class="pivx-button-big" onclick="generateVanityWallet()">
-                              <span class="buttoni-text" id="vanButtonText">Create A Vanity Wallet</span>
+                              <span class="buttoni-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 70"><path d="M3.497 25.717C1.401 25.588 0 23.847 0 21.753v-2.535c0-.775.149-1.593.925-1.593h22.719c2.173 0 3.941 1.861 3.941 4.034 0 2.174-1.769 3.988-3.941 3.988l-20.207.048c-.02 0 .08.023.06.022z"></path><path d="M5.229 69.625C4.455 69.625 4 68.494 4 67.719V38.661c0-1.911 1.447-3.731 3.258-3.989.175-.029.285-.047.483-.047h21.525c7.137 0 12.751-5.86 12.751-13.027 0-7.096-5.528-12.841-12.586-13.177-.002 0-.671.016-1.41.016l-20.335.066C5.529 8.373 4 6.652 4 4.558V2.023C4 1.247 4.407.625 5.183.625h24.059c11.57 0 20.654 9.546 20.706 21.104 0 9.378-6.307 17.727-15.337 20.311-1.622.445-3.122.705-4.735.778L12 42.842v22.485c0 2.156-2.141 4.298-4.235 4.298H5.229z"></path></svg></span>
+
+                              <span class="buttoni-text" id="vanButtonText" data-i18n="dCardTwoButton" >Create A Vanity Wallet</span>
+
                               <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
                     </button>
                 </div>
               </div>
               <!-- // GENERATE VANITY WALLET -->
+              <br>
+
+              <!-- ACCESS LEDGER HARDWARE WALLET -->
+              <div id='generateHardwareWallet' class="dashboard-item">
+                <div class="container">
+
+                  <div class="coinstat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+                      <path d="M45.936 22.101c-1.321-4.06-2.976-6.808-3.045-6.922a.754.754 0 00-1.39.506c.003.016.193 1.655-1.762 3.08-.671.49-1.896.378-2.569-.234-.828-.753-.744-2.081.237-3.738C40.95 8.818 35.582 1.034 35.352.707a.757.757 0 00-1.369.35c-.002.022-.264 2.274-1.601 4.499-1.747 2.906-4.447 4.417-8.026 4.491-5.056.105-8.143 1.798-9.843 3.201-1.885 1.556-2.542 3.111-2.569 3.176a.755.755 0 00.525 1.022c1.916.45 2.546 1.966 2.503 3.127-.038 1.027-.636 2.314-2.201 2.563-1.112.176-1.965-.002-2.535-.532-1.144-1.063-.975-3.236-.973-3.256a.755.755 0 00-1.232-.65c-4.492 3.706-6.797 10.581-5.735 17.109.468 2.875 1.59 5.545 3.247 7.724 1.854 2.437 4.333 4.266 7.372 5.434a.754.754 0 10.542-1.408C6.292 44.8 4.323 38.86 3.787 35.563a18.666 18.666 0 01.711-8.828c.754-2.28 1.901-4.258 3.354-5.803.154.907.518 1.99 1.352 2.77.928.866 2.208 1.176 3.805.922 2.001-.317 3.396-1.923 3.472-3.997.06-1.631-.775-3.485-2.732-4.342.97-1.445 3.855-4.591 10.639-4.732 5.173-.107 7.922-2.926 9.317-5.272.666-1.12 1.09-2.23 1.356-3.125.397.746.855 1.708 1.234 2.79 1.136 3.235 1.072 5.953-.187 8.077-1.94 3.273-.615 5.022.044 5.622 1.212 1.102 3.219 1.252 4.475.337.998-.728 1.583-1.517 1.924-2.229a37.385 37.385 0 011.962 4.852c1.156 3.565 2.237 8.886.819 13.997-1.352 4.873-4.731 8.762-10.044 11.56a.755.755 0 00.704 1.335c5.698-3.001 9.331-7.206 10.796-12.5 1.519-5.484.375-11.128-.852-14.896z"></path>
+                      <path d="M40.953 11.943a.754.754 0 101.459-.376l-.294-1.143a.756.756 0 00-1.462.377l.297 1.142zM25.17 33.984a.848.848 0 000-1.694h-6.537a.117.117 0 00-.117.118v.729c0 .454.358.825.805.853l5.849-.006z"></path>
+                      <path d="M26.779 27.343h-6.921a.117.117 0 00-.118.117v.73a.86.86 0 00.805.853l5.883-.015c.219 0 .419.007.419.007a4.106 4.106 0 013.896 4.103 4.083 4.083 0 01-3.957 4.08h-6.192c-.041 0-.083 0-.124.009a.838.838 0 00-.715.775v8.363c0 .066.055.115.117.115h.729a.859.859 0 00.854-.807v-6.651c0-.057.055-.105.109-.105l5.346-.008a6.014 6.014 0 001.334-.213 5.788 5.788 0 004.205-5.567 5.81 5.81 0 00-5.67-5.786z"></path>
+                    </svg>
+                  </div>
+
+                  <div class="col-md-12 dashboard-title">
+                    <h3 class="pivx-bold-title" style="font-size:38px;"><span data-i18n="dCardThreeTitle">Access your</span><div data-i18n="dCardThreeSubTitle">Hardware Wallet</div></h3>
+                    <p data-i18n="dCardThreeDesc">This will help managing the PIVX wallet on your ledger. Notice that the private key will remain safe in your hardware device</p>
+                  </div>
+
+                  <button class="pivx-button-big" onclick="importWallet({isHardwareWallet: true})">
+                    <span class="buttoni-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 70">
+                        <path d="M3.497 25.717C1.401 25.588 0 23.847 0 21.753v-2.535c0-.775.149-1.593.925-1.593h22.719c2.173 0 3.941 1.861 3.941 4.034 0 2.174-1.769 3.988-3.941 3.988l-20.207.048c-.02 0 .08.023.06.022z"></path>
+                        <path d="M5.229 69.625C4.455 69.625 4 68.494 4 67.719V38.661c0-1.911 1.447-3.731 3.258-3.989.175-.029.285-.047.483-.047h21.525c7.137 0 12.751-5.86 12.751-13.027 0-7.096-5.528-12.841-12.586-13.177-.002 0-.671.016-1.41.016l-20.335.066C5.529 8.373 4 6.652 4 4.558V2.023C4 1.247 4.407.625 5.183.625h24.059c11.57 0 20.654 9.546 20.706 21.104 0 9.378-6.307 17.727-15.337 20.311-1.622.445-3.122.705-4.735.778L12 42.842v22.485c0 2.156-2.141 4.298-4.235 4.298H5.229z"></path>
+                      </svg></span>
+
+                    <span class="buttoni-text" data-i18n="dCardThreeButton">Access my hardware wallet</span>
+
+                    <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                        <path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path>
+                      </svg></span>
+                  </button>
+                </div>
+              </div>
+              <!-- // IMPORT LEDGER HARDWARE WALLET -->
               <br>
 
               <!-- ACCESS WALLET -->
@@ -387,27 +559,31 @@
                   </div>
 
                   <div class="col-md-12 dashboard-title">
-                    <h3 class="pivx-bold-title-smaller"><span>Go to</span>My Wallet</h3>
-                    <p>This will import a MARIA wallet that you hold via it's private key, loading the address and pulling your existing balance, if any, from an explorer node.
+                    <h3 class="pivx-bold-title-smaller"><span data-i18n="dCardFourTitle">Go to</span> <div data-i18n="dCardFourSubTitle">My Wallet</div></h3>
+                    <p data-i18n="dCardFourDesc">This will import a PIVX wallet that you hold via it's private key, loading the address and pulling your existing balance, if any, from an explorer node.
                       <br>
-                      <span style="opacity: 0.75; font-size: small;">*Note: MPW developers can NOT access your wallet, this wallet runs purely in YOUR browser using JavaScript.</span>
+                      <span style="opacity: 0.75; font-size: small;" data-i18n="dCardFourSubDesc">*Note: MPW developers can NOT access your wallet, this wallet runs purely in YOUR browser using JavaScript.</span>
                     </p>
                   </div>
 
                   <!-- IMPORT WALLET -->
                   <input class="hide-element" type="text" id="clipboard">
                   <div id='importWallet' style='display: none;'>
-                    <input type="password" id='privateKey' placeholder="Private Key">
+                    <input type="password" id='privateKey' placeholder="Seed Phrase, XPriv or WIF Private Key" oninput="onPrivateKeyChanged()">
+                    <input hidden type="password" id='privateKeyPassword' placeholder="Password">
                     <button class="pivx-button-big" onclick="guiImportWallet()">
                                   <span class="buttoni-icon"><i class="fas fa-file-upload fa-tiny-margin"></i></span>
-                                  <span class="buttoni-text" id="importWalletText">Import Wallet</span>
+                                  <span class="buttoni-text" id="importWalletText" data-i18n="dCardFourButtonI" >Import Wallet</span>
                                   <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
                         </button>
                   </div>
                   <!-- // IMPORT WALLET -->
 
                   <button class="pivx-button-big" id="accessWalletBtn" onclick="accessOrImportWallet()">
-                              <span class="buttoni-text" id='wToggle'>Access My Wallet</span>
+                              <span class="buttoni-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 70"><path d="M3.497 25.717C1.401 25.588 0 23.847 0 21.753v-2.535c0-.775.149-1.593.925-1.593h22.719c2.173 0 3.941 1.861 3.941 4.034 0 2.174-1.769 3.988-3.941 3.988l-20.207.048c-.02 0 .08.023.06.022z"></path><path d="M5.229 69.625C4.455 69.625 4 68.494 4 67.719V38.661c0-1.911 1.447-3.731 3.258-3.989.175-.029.285-.047.483-.047h21.525c7.137 0 12.751-5.86 12.751-13.027 0-7.096-5.528-12.841-12.586-13.177-.002 0-.671.016-1.41.016l-20.335.066C5.529 8.373 4 6.652 4 4.558V2.023C4 1.247 4.407.625 5.183.625h24.059c11.57 0 20.654 9.546 20.706 21.104 0 9.378-6.307 17.727-15.337 20.311-1.622.445-3.122.705-4.735.778L12 42.842v22.485c0 2.156-2.141 4.298-4.235 4.298H5.229z"></path></svg></span>
+
+                              <span class="buttoni-text" id='wToggle' data-i18n="dCardFourButtonA">Access My Wallet</span>
+
                               <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
                     </button>
                 </div>
@@ -423,7 +599,7 @@
 
             <div id="StakingTab" class="tabcontent">
               <!-- STAKING FEATURES -->
-              <p id="info" class="minor-notif-subtext"><b>New Feature!</b><br>Please be aware MPW Cold Staking is a new, slightly experimental feature, it may be unstable, and is currently slow. Please have patience when using this feature, and wait for block confirmations before actions and balances are shown on-screen.</p>
+              <p id="info" class="minor-notif-subtext"><span data-i18n="stakeTitle"><b>New Feature!</b></span><br><span data-i18n="stakeSubTitle">Please be aware MPW Cold Staking is a new, slightly experimental feature, it may be unstable, and is currently slow. Please have patience when using this feature, and wait for block confirmations before actions and balances are shown on-screen.</span></p>
               <div class="add-frame">
               <div class="staking-banner-top">
                 <div id="staking-rectangle" class="col-md-4">
@@ -432,70 +608,197 @@
                             <div id="piv-price" class="staking-piv-icon"></div>
                         </div>
                         <div id="piv-price-amount">
-                            <p id="guiBalanceBoxStaking"><b id="guiBalanceStaking">~</b> MARIA</p>
+                            <p id="guiBalanceBoxStaking"><b id="guiBalanceStaking">~</b> <span id="guiBalanceStakingTicker">MARIA</span></p>
                         </div>
                     </div>
                     <div id="staking-box">
-                      <h3 id="stake-title" class="noselect">Staking &nbsp;&nbsp;<span id="balanceReloadStaking" class="reload noselect" onclick="refreshChainData()">&#x21bb;</span></h3>
+                      <h3 id="stake-title" class="noselect"><span data-i18n="staking">Staking</span> &nbsp;&nbsp;<span id="balanceReloadStaking" class="reload noselect" onclick="refreshChainData()">&#x21bb;</span></h3>
                     </div>
                 </div>
-            </div>
+              </div>
               <br>
               <div class="staking-banner-bottom">
                 <div class="stake-box large-box col-md-4">
-                  <h5 id="availToDelegate" class="stake-balances">Available: 0 MARIA</h5>
+                  <h5 id="availToDelegate" onclick="selectMaxBalance(domGuiDelegateAmount)" class="stake-balances ptr"><span data-i18n="available">Available</span>: 0 MARIA</h5>
                   <textarea id="delegateAmount" class="stake-input form-control private-key-area"></textarea>
                   <div class="button-padd">
                       <button class="pivx-button-big" onclick="delegateGUI()">
-                                  <span class="buttoni-icon"><i class="far fa-eye fa-tiny-margin"></i></span>
-                                  <span class="buttoni-text">Delegate</span>
+                                  <span class="buttoni-icon"><i class="far fa-snowflake fa-tiny-margin"></i></span>
+                                  <span class="buttoni-text" data-i18n="staking">Stake</span>
                                   <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
                         </button>
                  </div>
                 </div>
                 <div class="stake-box large-box col-md-4">
-                  <h5 id="availToUndelegate" class="stake-balances">Staking: 0 MARIA</h5>
+                  <h5 id="availToUndelegate" onclick="selectMaxBalance(domGuiUndelegateAmount, true)" class="stake-balances ptr"><span data-i18n="staking">Staking</span>: 0 MARIA</h5>
                   <textarea id="undelegateAmount" class="stake-input form-control private-key-area"></textarea>
                   <div class="button-padd">
                       <button class="pivx-button-big" onclick="undelegateGUI()">
-                                  <span class="buttoni-icon"><i class="far fa-eye fa-tiny-margin"></i></span>
-                                  <span class="buttoni-text">Undelegate</span>
+                                  <span class="buttoni-icon"><i class="far fa-snowflake fa-tiny-margin"></i></span>
+                                  <span class="buttoni-text" data-i18n="stakeUnstake">Unstake</span>
                                   <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
                         </button>
                  </div>
                 </div>
               </div>
               <!-- STAKING FEATURES -->
+              <div class="staking-banner-bottom">
+                <div class="stake-box large-box col-md-4">
+                  <div id="staking-rewards-title" class="staking-rewards-header">
+                    <h5> <span data-i18n="staking">Staking</span> <span data-i18n="rewards">Rewards</span> </h5>
+                  </div>
+                  <div class="staking-rewards-list">
+                <div id="staking-rewards-content">
+              </div>
+              <button type="button" id="stakingLoadMore" onclick="getStakingRewards()">
+                <span class="buttoni-icon" id="stakingLoadMoreIcon"><i class="fas fa-sync fa-tiny-margin"></i></span>
+                <span class="buttoni-text" data-i18n="stakeLoadMore">Load more</span>
+              </button>
+            </div>
+          </div>
+	      </div>
+	    </div>
+    </div>
+          <div id="Governance" class="tabcontent">
+              <div class="col-md-12 title-section float-left rm-pd">
+                <h3 class="pivx-bold-title center-text"> Governance</h3>
+                <p class="center-text">From this tab you can check the proposals and, if you have a masternode, be a part of the <b>DAO</b> and vote!</p>
+              </div>
+              <table id="proposalsTable" class="table table-hover table-dark bg-transparent" style="width:100%">
+		  <thead>
+		      <td class="text-center"> <b> Name </b> </td>
+		      <td class="text-center"> <b> Payment </b> </td>
+		      <td class="text-center"> <b> Votes </b> </td>
+		      <td class="text-center"> <b> Vote </b> </td>
+		  </thead>
+		  <tbody id="proposalsTableBody" style="text-align: center; vertical-align: middle;">
+		  </tbody>
+              </table>
+          </div>
+          <div id="Masternode" class="tabcontent">
+            <div class="col-md-12 title-section float-left rm-pd">
+              <h3 class="pivx-bold-title center-text"><span>Control your</span> Masternode</h3>
+              <p class="center-text">From this tab you can create and access one or more masternodes</p>
+            </div>
+         
+            <div style='display: block;'>
+              <br>
+              <p id="mnTextErrors" class="center-text"></p>
+            </div>
+
+            <!-- IMPORT MASTERNODE -->
+            <div id='accessMasternode' class="dashboard-item" style='display:none; width:100%;'>
+              <div class="container">
+
+                <div id="accessMasternodeText"></div> 
+                <br>
+                <input class="hide-element" type="text">
+                <div style='display: block;'>
+                  <input type="password" id='mnPrivateKey' placeholder="Masternode Private Key">
+                  <input type="text" id='mnIP' placeholder="Masternode ip address">
+                  <select id='mnTxId' style="display: block;" placeholder="Masternode collateral tx" class="form-control">
+		  </select>
+                  <button class="pivx-button-big" onclick="importMasternode()">
+                                <span class="buttoni-icon"><i class="fas fa-file-upload fa-tiny-margin"></i></span>
+                                <span class="buttoni-text" id="importMnText">Access Masternode</span>
+                                <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
+                      </button>
+                </div>
+              </div>
+            </div>
+            <!-- // IMPORT MASTERNODE -->
+            <br>            
+
+            <div id='createMasternode' class="dashboard-item" style='display:none; width:100%;'>
+              <div class="container" >
+
+                <h4>Create a masternode <small style="opacity: 0.75;">(10k MARIA)</small></h4> 
+                <input class="hide-element" type="text">
+                <div style='display: block;'>
+                  <p>Choose your Masternode type</p>
+                  <select id='mnCreateType' style="display: block; text-align: center;" placeholder="Masternode collateral tx" class="form-control">
+		                <option value="VPS"> Self-hosted (a masternode server ran by you)</option>
+                    <option value="Third Party"> Third Party (a masternode server ran by someone else)</option>
+                  </select>
+                  <br>
+                  <br>
+                  <button class="pivx-button-big" onclick="createMasternode()">
+                                <span class="buttoni-icon"><i class="fas fa-file-upload fa-tiny-margin"></i></span>
+                                <span class="buttoni-text" id="importMnText">Create Masternode</span>
+                                <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
+                      </button>
+                </div>
               </div>
             </div>
 
+            <div id="mnDashboard" class="staking-banner-bottom">
+              <div class="stake-box large-box col-md-4">
+                <h4 class="stake-balances" style="background-color: #2c0044;border-radius: 10px;">
+                  Status <small id="mnProtocol" style="opacity: 0.5;"></small>
+                </h4>
+                <h2 id="mnStatus" class="stake-balances" style="overflow-wrap: anywhere;top: 50%;left: 50%;transform: translate(-50%, -50%);position: absolute;width: 100%;padding: 10px;" id="mnStatus">
+                  
+                </h2>
+              </div>
+              <div class="stake-box large-box col-md-4">
+                <h4 id="mnNetType" class="stake-balances" style="background-color: #2c0044;border-radius: 10px;">
+                  
+                </h4>
+                <h2 id="mnNetIP" class="stake-balances" style="overflow-wrap: anywhere;top: 50%;left: 50%;transform: translate(-50%, -50%);position: absolute;width: 100%;padding: 10px;font-family: mono !important;font-size: x-large;" id="mnStatus">
+                  
+                </h2>
+              </div>
+              <div class="stake-box large-box col-md-4">
+                <h4 class="stake-balances" style="background-color: #2c0044;border-radius: 10px;">
+                  Last Seen
+                </h4>
+                <h2 id="mnLastSeen" class="stake-balances" style="overflow-wrap: anywhere;top: 50%;left: 50%;transform: translate(-50%, -50%);position: absolute;width: 100%;padding: 10px;font-size: xx-large;" id="mnStatus">
+                  
+                </h2>
+              </div>
+            </div>
 
+            <br>
+
+            <center id='controlMasternode' style='display:none; width:100%;'>
+                <button class="pivx-button-big" onclick="destroyMasternode()" style="margin: 20px; font-weight: 550 !important;">
+                  <span class="buttoni-icon"><i class="fas fa-burn fa-tiny-margin"></i></span>
+                  <span class="buttoni-text" id="importMnText">Destroy Masternode</span>
+                </button>
+
+                <button class="pivx-button-big" onclick="startMasternode(true)" style="margin: 20px; font-weight: 550 !important;">
+                  <span class="buttoni-icon"><i class="fas fa-redo-alt fa-tiny-margin"></i></span>
+                  <span class="buttoni-text" id="importMnText">Restart Masternode</span>
+                </button>
+            </center>
+
+          </div>
 
             <div id="Transaction" class="tabcontent">
 
               <!-- MARIA TITLE SECTION -->
               <div class="col-md-12 title-section float-left rm-pd">
-                  <h3 class="pivx-bold-title center-text"><span>Create a</span> Transaction</h3>
+                  <h3 class="pivx-bold-title center-text"><span data-i18n="sendTitle">Create a</span> <div data-i18n="sendSubTitle">Transaction</div></h3>
               </div>
               <br>
               <!-- // MARIA TITLE SECTION -->
 
               <div id='sendNotice' class="col-md-12 float-left"></div>
               <div class="col-md-12">
-                <p id="communication" class="center-text">Please <b>AVOID</b> sending to Shielded addresses using this wallet - this functionality is currently unsupported.</p>
+                <p id="communication" class="center-text" data-i18n="sendShieldingWarning">Please <b>AVOID</b> sending to Shielded addresses using this wallet - this functionality is currently unsupported.</p>
               </div>
               <div class='max-width' style='clear:both;'>
-                <div id="simpleTransactionsDropdown" class="bold-trans" onclick='toggleDropDown("simpleTransactions")'>Create Simple Transactions<span
+                <div id="simpleTransactionsDropdown" class="bold-trans" onclick='toggleDropDown("simpleTransactions")'><div data-i18n="sendSimpleTxTitle">Create Simple Transactions</div><span
                     style='float:right;'>▼</span></div>
                 <div id='simpleTransactions' style='display: block'>
                   <br>
-                  <label>Address</label><br>
+                  <label data-i18n="sendSimpleTxAddress">Address</label><br>
                   <input class="center-text" style="width: 100%; font-family: monospace;" type="text" id="address1s">
                   <br>
-                  <label>Amount</label><br>
+                  <label><span data-i18n="amount">Amount</span> | <b onclick="selectMaxBalance(domValue1s)" style="opacity: 0.8;" class="ptr" data-i18n="sendSimpleTxAll">(Send All)</b></label><br>
                   <input class="center-text" type="text" id="value1s">
                   <div id="reqDescDisplay" style="display: none;">
-                    <label>Description (from the merchant)</label><br>
+                    <label data-i18n="sendSimpleTxDesc">Description (from the merchant)</label><br>
                     <input class="center-text" type="text" disabled id="reqDesc">
                   </div>
                   <br>
@@ -503,7 +806,7 @@
                   <br>
                   <button class="pivx-button-big" onclick="createTxGUI()">
                               <span class="buttoni-icon"><i class="fas fa-paper-plane fa-tiny-margin"></i></span>
-                              <span class="buttoni-text" id="genIt">Send Transaction</span>
+                              <span class="buttoni-text" id="genIt" data-i18n="sendSimpleTxButton">Send Transaction</span>
                               <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
                     </button>
                 </div>
@@ -511,56 +814,68 @@
               </div>
               <br>
               <div class='max-width' style='clear:both;'>
-                <div onclick='toggleDropDown("advTransactions")' class="bold-trans">Create Manual Transactions<span
+                <div onclick='toggleDropDown("advTransactions")' class="bold-trans"><div data-i18n="sendManualTxTitle">Manual Transactions</div><span
                     style='float:right;'>▼</span></div>
                 <div id='advTransactions' style='display:none'>
                   <br>
-                  <h3>Inputs</h3>
-                  <label>Trx Hash</label><br>
+                  <h3 data-i18n="sendManualTxInput">Inputs</h3>
+                  <label data-i18n="sendManualTxTRXHash">Trx Hash</label><br>
                   <input type="text" id="prevTrxHash">
-                  <label>Index</label><br>
+                  <label data-i18n="sendManualTxIndex">Index</label><br>
                   <input type="text" id="index">
-                  <label>Script</label><br>
+                  <label data-i18n="sendManualTxScript">Script</label><br>
                   <input type="text" id="script"><br><br>
-                  <h3>Outputs</h3>
-                  <label>Output Address 1</label><br>
+                  <h3 data-i18n="sendManualTxOutputs">Outputs</h3>
+                  <label data-i18n="sendManualTxOutputAddr">Output Address 1</label><br>
                   <input type="text" id="address1">
-                  <label>Amount</label><br>
+                  <label data-i18n="amount">Amount</label><br>
                   <input type="text" id="value1">
                   <br />
-                  <label>Output address 2</label><br>
+                  <label data-i18n="sendManualTxOutputAddrTwo">Output address 2</label><br>
                   <input type="text" id="address2">
-                  <label>Amount</label><br>
+                  <label data-i18n="amount">Amount</label><br>
                   <input type="text" id="value2"><br><br>
-                  <h3>WIF Key</h3>
-                  <label>key</label><br>
+                  <h3 data-i18n="sendManualTxWIFKey">WIF Key</h3>
                   <input type="text" id="wif">
                   <br /><br />
-                  <p style="padding: 5px 0 15px;"><b>WARNING:</b> ANY FUNDS NOT ALLOCATED WILL BE USED AS FEES</p>
+                  <p style="padding: 5px 0 15px;" data-i18n="sendManualTxWarning"><b>WARNING:</b> ANY FUNDS NOT ALLOCATED WILL BE USED AS FEES</p>
                   <button class="pivx-button-big" onclick="createRawTransaction()">
                               <span class="buttoni-icon"><i class="fas fa-paper-plane fa-tiny-margin"></i></span>
-                              <span class="buttoni-text">Create Raw Signed Transction</span>
+                              <span class="buttoni-text" data-i18n="sendManualTxButton">Create Raw Signed Transction</span>
                               <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
                     </button>
                   <br /><br /><br />
-                  <h4 id="signed-raw">Signed Raw Transaction</h4>
+                  <h4 id="signed-raw" data-i18n="sendSignedRawTx">Signed Raw Transaction</h4>
                   <textarea rows="15" cols="70" id="rawTrx"></textarea>
-                  <p>Don't understand how this works? <a target='_blank'
-                      href='https://github.com/hostmaria/MyMariaWallet/'>Tutorial Here (link will be updated..)</a></p>
-                  <p>Advanced Details: <br>locktime is set to 0, sequence is set to max. SIGHASH_ALL option is chosen
+                  <p><span data-i18n="sendSignedTutorial">Don't understand how this works?</span> <a target='_blank'
+                      href='https://github.com/PIVX-Labs/MyMARIAWallet#transaction'><span data-i18n="sendSignedTutorialLink">Tutorial Here</span></a></p>
+                  <p data-i18n="sendSignedTutorialAdvInfo">Advanced Details: <br>locktime is set to 0, sequence is set to max. SIGHASH_ALL option is chosen
                       for signing raw Transaction.</p>
                 </div>
               </div>
             </div>
             <div id="Settings" class="tabcontent">
-              <label for="explorer">Choose an explorer:</label>
+              <label for="explorer" data-i18n="settingsExplorer">Choose an explorer:</label>
               <br>
               <select id="explorer" class="form-control" name="explorer">
                 <!-- Populated via JS at DOM load (settings.js) -->
               </select>
+              <br>              
+              <label for="translation" data-i18n="settingsLanguage">Choose an Language:</label>
+              <br>
+              <select id="translation" class="form-control" name="translation">
+                <!-- Populated via JS at DOM load (settings.js) -->
+              </select>
+              <br>
+	      
+              <label for="node" data-i18n="settingsPivxNode">Choose a PIVX node:</label>
+              <br>
+              <select id="node" class="form-control" name="node">
+                <!-- Populated via JS at DOM load (settings.js) -->
+              </select>
               <br>
 
-              <label for="analytics">Choose your analytics contribution level:</label>
+              <label for="analytics" data-i18n="settingsAnalytics">Choose your analytics contribution level:</label>
               <br>
               <select id="analytics" class="form-control" name="analytics">
                 <!-- Populated via JS at DOM load (settings.js) -->
@@ -570,12 +885,12 @@
 
               <button class="pivx-button-big" onclick="toggleDebug()">
                               <span class="buttoni-icon"><i class="fas fa-bug fa-tiny-margin"></i></span>
-                              <span class="buttoni-text">Toggle Debug Mode</span>
+                              <span class="buttoni-text" data-i18n="settingsToggleDebug">Toggle Debug Mode</span>
                               <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
               </button>
-              <button class="pivx-button-big" onclick="toggleNetwork()">
+              <button class="pivx-button-big" onclick="toggleTestnet()">
                               <span class="buttoni-icon"><i class="fas fa-network-wired fa-tiny-margin"></i></span>
-                              <span class="buttoni-text">Toggle Networking Mode</span>
+                              <span class="buttoni-text" data-i18n="settingsToggleTestnet">Toggle Testnet Mode</span>
                               <span class="buttoni-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M23.328 16.707L13.121 26.914a.5.5 0 01-.707 0l-2.828-2.828a.5.5 0 010-.707L16.964 16 9.586 8.621a.5.5 0 010-.707l2.828-2.828a.5.5 0 01.707 0l10.207 10.207a1 1 0 010 1.414z"></path></svg></span>
               </button>
 
@@ -603,13 +918,37 @@
   <script type="text/javascript" src="scripts/misc.js"></script>
   <script type="text/javascript" src="scripts/wallet.js"></script>
   <script type="text/javascript" src="scripts/network.js"></script>
-
+  <script type="text/javascript" src="scripts/i18n.js"></script>
+  <script type="text/javascript" src="scripts/mempool.js"></script>
   <script>
+    // TRANSLATION
+    //Create an object of objects filled with all the translations
+    var translatableLanguages = {
+      "en": en_translation,
+      "uwu": uwu_translation
+    }
+    localTranslation = localStorage.getItem('translation')
+    // Check if set in local storage
+    if(localTranslation != null){
+      translation = translatableLanguages[localTranslation]
+    }else{
+      // Check if we support the user's browser locale
+      if (arrActiveLangs.includes(strLang)) {
+        translation = translatableLanguages[strLang]
+      }else{
+        // Default to EN if the locale isn't supported yet
+        console.log("i18n: Your language (" + strLang + ") is not supported yet, if you'd like to contribute translations (for rewards!) contact us on GitHub or Discord!")
+        translation = en_translation
+      }
+    }
+    translate(translation);
+
     // WALLET STATE DATA
-    let cachedUTXOs = [];
-    let arrDelegatedUTXOs = [];
+    const mempool = new Mempool();
+    let arrRewards = [];
     let cachedBlockCount = 0;
-    let cachedColdStakeAddr = "";
+    //                        PIVX Labs' Cold Pool
+    let cachedColdStakeAddr = "SdgQDpS8jDRJDX8yK8m9KnTMarsE84zdsy";
 
     // Cached DOM elements
     const domStart = document.getElementById("start");
@@ -617,11 +956,17 @@
     const domGuiStaking = document.getElementById('guiStaking');
     const domGuiWallet = document.getElementById('guiWallet');
     const domGuiBalance = document.getElementById("guiBalance");
+    const domGuiBalanceTicker = document.getElementById("guiBalanceTicker");
     const domGuiBalanceBox = document.getElementById("guiBalanceBox");
     const domBalanceReload = document.getElementById("balanceReload");
     const domBalanceReloadStaking = document.getElementById("balanceReloadStaking");
     const domGuiBalanceStaking = document.getElementById("guiBalanceStaking");
+    const domGuiBalanceStakingTicker = document.getElementById("guiBalanceStakingTicker");
+    const domGuiStakingLoadMore = document.getElementById("stakingLoadMore");
+    const domGuiStakingLoadMoreIcon = document.getElementById("stakingLoadMoreIcon");
     const domGuiBalanceBoxStaking = document.getElementById("guiBalanceBoxStaking");
+    const domGuiDelegateAmount = document.getElementById('delegateAmount');
+    const domGuiUndelegateAmount = document.getElementById('undelegateAmount');
     const domTxTab = document.getElementById("txTab");
     const domStakeTab = document.getElementById("stakeTab");
     const domsendNotice = document.getElementById("sendNotice");
@@ -630,15 +975,34 @@
     const domAddress1s = document.getElementById("address1s");
     const domValue1s = document.getElementById("value1s");
     const domGuiViewKey = document.getElementById('guiViewKey');
-    const domPrivateTxt = document.getElementById('PrivateTxt');
-    const domPrivateQr = document.getElementById('PrivateQR');
-    const domPublicQr = document.getElementById('PublicQR');
     const domModalQR = document.getElementById('ModalQR');
     const domModalQrLabel = document.getElementById('ModalQRLabel');
     const domPrefix = document.getElementById('prefix');
+    const domPrefixNetwork = document.getElementById('prefixNetwork');
     const domWalletToggle = document.getElementById("wToggle");
     const domGenerateWallet = document.getElementById('generateWallet');
     const domGenVanityWallet = document.getElementById('generateVanityWallet');
+    const domGenHardwareWallet = document.getElementById('generateHardwareWallet');
+    //GOVERNANCE ELEMENTS
+    const domGovProposalsTable = document.getElementById('proposalsTable');
+    const domGovProposalsTableBody = document.getElementById('proposalsTableBody');
+    //MASTERNODE ELEMENTS
+    const domCreateMasternode = document.getElementById('createMasternode');
+    const domControlMasternode = document.getElementById('controlMasternode')
+    const domAccessMasternode = document.getElementById('accessMasternode');
+    const domMnAccessMasternodeText = document.getElementById('accessMasternodeText');
+    const domMnCreateType = document.getElementById('mnCreateType');
+    const domMnTextErrors = document.getElementById('mnTextErrors');
+    const domMnIP = document.getElementById('mnIP');
+    const domMnTxId = document.getElementById('mnTxId');
+    const domMnPrivateKey = document.getElementById('mnPrivateKey');
+    const domMnDashboard = document.getElementById('mnDashboard');
+    const domMnProtocol = document.getElementById('mnProtocol');
+    const domMnStatus = document.getElementById('mnStatus');
+    const domMnNetType = document.getElementById('mnNetType');
+    const domMnNetIP = document.getElementById('mnNetIP');
+    const domMnLastSeen = document.getElementById('mnLastSeen');
+
     const domAccessWallet = document.getElementById('accessWallet');
     const domImportWallet = document.getElementById('importWallet');
     const domImportWalletText = document.getElementById('importWalletText');
@@ -658,10 +1022,27 @@
     const domReqDisplay = document.getElementById('reqDescDisplay');
     const domIdenticon = document.getElementById("identicon");
     const domPrivKey = document.getElementById("privateKey");
+    const domPrivKeyPassword = document.getElementById("privateKeyPassword");
     const domAvailToDelegate = document.getElementById('availToDelegate');
     const domAvailToUndelegate = document.getElementById('availToUndelegate');
     const domAnalyticsDescriptor = document.getElementById('analyticsDescriptor');
-
+    const domStakingRewardsList = document.getElementById('staking-rewards-content');
+    const domStakingRewardsTitle = document.getElementById('staking-rewards-title');
+    const domMnemonicModalContent = document.getElementById("ModalMnemonicContent");
+    const domMnemonicModalButton = document.getElementById("modalMnemonicConfirmButton");
+    const domExportDiv = document.getElementById("exportKeyDiv");
+    const domExportKey = document.getElementById("exportKeyText");
+    const domExportWallet = document.getElementById("guiExportWallet");
+    const domNewAddress = document.getElementById("guiNewAddress");
+    const domConfirmModalHeader = document.getElementById("confirmModalHeader");
+    const domConfirmModalTitle = document.getElementById("confirmModalTitle");
+    const domConfirmModalContent = document.getElementById("confirmModalContent");
+    const domConfirmModalButtons = document.getElementById("confirmModalButtons");
+    const domConfirmModalConfirmButton = document.getElementById("confirmModalConfirmButton");
+    const domConfirmModalCancelButton = document.getElementById("confirmModalCancelButton");
+	  
+    const masternodeLegacyAccessText='Access the masternode linked to this address<br> Note: the masternode MUST have been already created (however it can be online or offline)<br>  If you want to create a new masternode access with a HD wallet'
+    const masternodeHDAccessText="Access your masternodes if you have any! If you don't you can create one"
     // Aggregate menu screens and links for faster switching
     const arrDomScreens = document.getElementsByClassName("tabcontent");
     const arrDomScreenLinks = document.getElementsByClassName("tablinks");
@@ -670,14 +1051,14 @@
     const domAlertPos = document.getElementsByClassName("alertPositioning")[0];
 
     function getBalance(updateGUI = false) {
-      const nBalance = cachedUTXOs.reduce((a, b) => a + b.sats, 0);
-
+      const nBalance = mempool.getBalance();
+      
       // Update the GUI too, if chosen
       if (updateGUI) {
         // Set the balance, and adjust font-size for large balance strings
         const nLen = (nBalance / COIN).toFixed(2).length;
         domGuiBalance.innerText = (nBalance / COIN).toFixed(nLen >= 6 ? 0 : 2);
-        domAvailToDelegate.innerText = "Available: ~" + (nBalance / COIN).toFixed(2) + " MARIA";
+        domAvailToDelegate.innerText = "Available: ~" + (nBalance / COIN).toFixed(2) + " " + cChainParams.current.TICKER;
         
         // Add a notice to the Send page if balance is lacking
         domsendNotice.innerHTML = nBalance ? '' : '<div class="alert alert-danger" role="alert"><h4>Note:</h4><h5>You don\'t have any funds, get some coins first!</h5></div>';
@@ -687,16 +1068,35 @@
     }
 
     function getStakingBalance(updateGUI = false) {
-      const nBalance = arrDelegatedUTXOs.reduce((a, b) => a + b.sats, 0);
-
+      const nBalance = mempool.getDelegatedBalance();
+      
       if (updateGUI) {
         // Set the balance, and adjust font-size for large balance strings
         domGuiBalanceStaking.innerText = Math.floor(nBalance / COIN);
         domGuiBalanceBoxStaking.style.fontSize = Math.floor(nBalance / COIN).toString().length >= 4 ? "large" : "x-large";
-        domAvailToUndelegate.innerText = "Staking: ~" + (nBalance / COIN).toFixed(2) + " MARIA";
+        domAvailToUndelegate.innerText = "Staking: ~" + (nBalance / COIN).toFixed(2) + " " + cChainParams.current.TICKER;
       }
 
       return nBalance;
+    }
+
+    function selectMaxBalance(domValueInput, fCold = false) {
+      domValueInput.value = (fCold ? getStakingBalance() : getBalance()) / COIN;
+    }
+
+    function updateStakingRewardsGUI(fCallback = false) {
+      if (!arrRewards.length) {
+        // This ensures we don't spam network requests, since if a network callback says we have no stakes; no point checking again!
+        if (!fCallback) getStakingRewards();
+        return;
+      }
+      // DOM-optimised list generation
+      const strList = arrRewards.map(cReward => `<i style="opacity: 0.75; cursor: pointer" onclick="window.open('${cExplorer.url + '/tx/' + cReward.id}', '_blank')">${new Date(cReward.time * 1000).toLocaleDateString()}</i> <b>+${cReward.amount} ${cChainParams.current.TICKER}</b>`).join("<br>");
+      // Calculate total
+      const nRewards = arrRewards.reduce((total, reward) => total + reward.amount, 0);
+      // Update DOM
+      domStakingRewardsTitle.innerHTML = `Staking Rewards: ≥${nRewards} ${cChainParams.current.TICKER}`;
+      domStakingRewardsList.innerHTML = strList;
     }
 
     // URL-Query request processing
@@ -755,25 +1155,21 @@
       }, 1000);
     }
 
-    function openDonatePage() {
+    function guiPreparePayment(strTo = "", strAmount = 0, strDesc = "") {
       domTxTab.click();
       if (domSimpleTXs.style.display === 'none')
         domSimpleTXsDropdown.click();
-      domAddress1s.value = donationAddress;
+      // Apply values
+      domAddress1s.value = strTo;
+      domValue1s.value = strAmount;
+      domReqDesc.value = strDesc;
+	    domReqDisplay.style.display = strDesc ? 'block' : 'none';
       domValue1s.focus();
-    }
-
-    let viewPrivKey = false;
-    function toggleKeyView() {
-      viewPrivKey = !viewPrivKey;
-      domGuiViewKey.innerHTML     = viewPrivKey  ? 'Privkey QR' : 'Pubkey QR';
-      domPrivateTxt.style.display = domPrivateQr.style.display = viewPrivKey  ? 'block' : 'none';
-      domPublicQr.style.display   = !viewPrivKey ? 'block' : 'none';
     }
 
     function hideAllWalletOptions() {
       // Hide and Reset the Vanity address input
-      domPrefix.value = PUBKEY_PREFIX;
+      domPrefix.value = "";
       domPrefix.style.display = 'none';
 
       // Hide all "*Wallet" buttons
@@ -781,11 +1177,218 @@
       domImportWallet.style.display = 'none';
       domGenVanityWallet.style.display = 'none';
       domAccessWallet.style.display = 'none';
+      domGenHardwareWallet.style.display = 'none';
+    }
+
+    async function govVote(hash, voteCode){
+      if (await confirmPopup({
+          title: ALERTS.CONFIRM_POPUP_VOTE,
+          html: ALERTS.CONFIRM_POPUP_VOTE_HTML,
+        }) == true) {
+        if(localStorage.getItem("masternode")){
+          const cMasternode = new Masternode(JSON.parse(localStorage.getItem("masternode")));
+          if (await cMasternode.getStatus() !== "ENABLED") {
+            createAlert("warning","Your masternode is not enabled yet!", 6000);
+            return;
+          }
+          const result = await cMasternode.vote(hash.toString(), voteCode); //1 yes 2 no
+          if (result.includes("Voted successfully")) { //good vote
+            createAlert('success', 'Vote submitted!', 6000);
+          } else if(result.includes("Error voting :")) { //If you already voted return an alert
+            createAlert('warning', 'You already voted for this proposal! Please wait 1 hour', 6000);
+          } else if(result.includes("Failure to verify signature.")) { //wrong masternode private key
+            createAlert('warning', 'Failed to verify signature, please check your masternode\'s private key', 6000);
+          } else { //this could be everything
+	          console.error(result);
+            createAlert('warning', 'Internal error, please try again later', 6000);
+          }
+        } else {
+          createAlert('warning', 'Access a masternode before voting!', 6000);
+        }
+      }
+    }
+
+    async function startMasternode(fRestart = false) {
+      if (localStorage.getItem("masternode")) {
+        const cMasternode = new Masternode(JSON.parse(localStorage.getItem("masternode")));
+        if (await cMasternode.start()) {
+          createAlert('success', '<b>Masternode ' + (fRestart ? 're' : '') + 'started!</b>', 4000);
+        } else {
+          createAlert('warning', '<b>Failed to ' + (fRestart ? 're' : '') + 'start masternode!</b>', 4000);
+        }
+      }
+    }
+
+    function destroyMasternode() {
+      if (localStorage.getItem("masternode")) {
+        localStorage.removeItem("masternode");
+        createAlert('success', '<b>Masternode destroyed!</b><br>Your coins are now spendable.', 5000);
+        updateMasternodeTab();
+      }
+    }
+
+    async function createMasternode() {
+      const fGeneratePrivkey = domMnCreateType.value === "VPS";
+      const [strAddress,strAddressPath] = await getNewAddress();
+      const nValue = cChainParams.current.collateralInSats;
+    
+      const nBalance = getBalance();
+      const cTx = bitjs.transaction();
+      const cCoinControl = chooseUTXOs(cTx, nValue, 0, false);
+      
+      if (!cCoinControl.success) return alert(cCoinControl.msg);
+      // Compute fee
+      const nFee = getFee(cTx.serialize().length);
+      
+      // Compute change (or lack thereof)
+      const nChange = cCoinControl.nValue - (nFee + nValue);
+      const [changeAddress,changeAddressPath] = await getNewAddress({verify: masterKey.isHardwareWallet});
+      const outputs = [];
+      if (nChange > 0) {
+        // Change output
+        outputs.push([changeAddress, nChange / COIN]);
+      } else {
+       return createAlert("warning", "You don't have enough " + cChainParams.current.TICKER + " to create a masternode", 5000);
+      }
+      
+      // Primary output (receiver)
+      outputs.push([strAddress, nValue / COIN]);
+      
+      // Debug-only verbose response
+      if (debug) domHumanReadable.innerHTML = "Balance: " + (nBalance / COIN) + "<br>Fee: " + (nFee / COIN) + "<br>To: " + strAddress + "<br>Sent: " + (nValue / COIN) + (nChange > 0 ? "<br>Change Address: " + changeAddress + "<br>Change: " + (nChange / COIN) : "");
+
+      // Add outputs to the Tx
+      for (const output of outputs) {
+        cTx.addoutput(output[0], output[1]);
+      }
+
+      // Sign and broadcast!
+      if (!masterKey.isHardwareWallet) {
+        const sign = await cTx.sign(masterKey, 1);
+        const result = await sendTransaction(sign);
+        if(result){
+          for(const tx of cTx.inputs){
+            mempool.autoRemoveUTXO({id: tx.outpoint.hash,path: tx.path,vout: tx.outpoint.index})
+          }
+          const futureTxid=swapHEXEndian(await hash(Crypto.util.hexToBytes((await hash((Crypto.util.hexToBytes(sign)))))));
+          mempool.addUTXO({id: futureTxid,path: changeAddressPath,sats: nChange,vout: 0,script:Crypto.util.bytesToHex(cTx.outputs[0].script),status: Mempool.PENDING})
+          mempool.addUTXO({id: futureTxid,path: strAddressPath,script:Crypto.util.bytesToHex(cTx.outputs[1].script),sats: nValue,vout: 1,status: Mempool.PENDING})
+        }
+      } else {
+        // Format the inputs how the Ledger SDK prefers
+        const arrInputs = [];
+        const arrAssociatedKeysets = [];
+        for (const cInput of cTx.inputs) {
+          const cInputFull = await getTxInfo(cInput.outpoint.hash);
+          arrInputs.push([await cHardwareWallet.splitTransaction(cInputFull.hex), cInput.outpoint.index]);
+          arrAssociatedKeysets.push(cInput.path);
+        }
+        const cLedgerTx = await cHardwareWallet.splitTransaction(cTx.serialize());
+              const strOutputScriptHex = await cHardwareWallet
+          .serializeTransactionOutputs(cLedgerTx)
+          .toString("hex");
+
+        // Sign the transaction via Ledger
+        const strSerialisedTx = await confirmPopup(
+          {
+            title: ALERTS.CONFIRM_POPUP_TRANSACTION,
+            html: createTxConfirmation(outputs),
+            resolvePromise: cHardwareWallet.createPaymentTransactionNew({
+              inputs: arrInputs,
+              associatedKeysets: arrAssociatedKeysets,
+              outputScriptHex: strOutputScriptHex,
+            }),
+          }
+        );
+
+        // Broadcast the Hardware (Ledger) TX
+        const result = await sendTransaction(strSerialisedTx);
+        if(result){
+          for(const tx of cTx.inputs){
+            mempool.autoRemoveUTXO({id: tx.outpoint.hash,path: tx.path,vout: tx.outpoint.index})
+          }
+          const futureTxid=swapHEXEndian(await hash(Crypto.util.hexToBytes((await hash((Crypto.util.hexToBytes(strSerialisedTx)))))));
+          mempool.addUTXO({id: futureTxid,path: changeAddressPath,sats: nChange,vout: 0,script:Crypto.util.bytesToHex(cTx.outputs[0].script),status: Mempool.PENDING});
+          mempool.addUTXO({id: futureTxid,path: strAddressPath,script:Crypto.util.bytesToHex(cTx.outputs[1].script),sats: nValue,vout: 1,status: Mempool.PENDING});
+        }
+        
+      }
+      if(fGeneratePrivkey){
+        let masternodePrivateKey= await generateMnPrivkey();
+        await confirmPopup({
+          title: ALERTS.CONFIRM_POPUP_MN_P_KEY,
+          html: masternodePrivateKey + ALERTS.CONFIRM_POPUP_MN_P_KEY_HTML, 
+        });
+      }
+      createAlert("success", "<b>Masternode Created!<b><br>Wait 15 confirmations to proceed further");
+      // Remove any previous Masternode data, if there were any
+      localStorage.removeItem("masternode");
+    }
+    async function importMasternode(){
+      const mnPrivKey = domMnPrivateKey.value;
+      
+      const ip = domMnIP.value;
+      let address;
+      let collateralTxId;
+      let outidx;
+      let collateralPrivKeyPath;
+      domMnIP.value = "";
+      domMnPrivateKey.value = "";
+
+      if (!ip.includes(":")) {
+	address = `${ip}:${cChainParams.current.MASTERNODE_PORT}`;
+      } else {
+	address = ip;
+      }
+      
+      if (!masterKey.isHD) {
+        // Find the first UTXO matching the expected collateral size
+        const cCollaUTXO = mempool.getConfirmed().find(cUTXO => cUTXO.sats === cChainParams.current.collateralInSats);
+
+        // If there's no valid UTXO, exit with a contextual message
+        if (!cCollaUTXO) {
+          if (getBalance(false) < cChainParams.current.collateralInSats) {
+            // Not enough balance to create an MN UTXO
+            createAlert("warning", "You need <b>" + ((cChainParams.current.collateralInSats - getBalance(false)) / COIN) + " more " + cChainParams.current.TICKER + "</b> to create a Masternode!", 10000);
+          } else {
+            // Balance is capable of a masternode, just needs to be created
+            // TODO: this UX flow is weird, is it even possible? perhaps we can re-design this entire function accordingly
+            createAlert("warning", "You have enough balance for a Masternode, but no valid collateral UTXO of " + (cChainParams.current.collateralInSats / COIN) + " " + cChainParams.current.TICKER, 10000);
+          }
+          return;
+        }
+
+        collateralTxId = cCollaUTXO.id;
+        outidx = cCollaUTXO.vout;
+        collateralPrivKeyPath = "legacy";
+      } else {
+        const path = domMnTxId.value;
+        const masterUtxo = mempool.getConfirmed().findLast(u=>u.path === path); // first UTXO for each address in HD
+        // sanity check:
+        if (masterUtxo.sats !== cChainParams.current.collateralInSats) {
+          return createAlert("warning", "This is not a suitable UTXO for a Masternode", 10000);
+        }
+        collateralTxId = masterUtxo.id;
+        outidx = masterUtxo.vout;
+        collateralPrivKeyPath = path;     
+      }
+      domMnTxId.value = "";
+
+      
+      const cMasternode = new Masternode({
+        walletPrivateKeyPath: collateralPrivKeyPath,
+        mnPrivateKey: mnPrivKey,
+        collateralTxId: collateralTxId,
+        outidx: outidx,
+        addr: address
+      });
+      await refreshMasternodeData(cMasternode, true);
+      await updateMasternodeTab();
     }
 
     function accessOrImportWallet() {
       // Hide and Reset the Vanity address input
-      domPrefix.value = PUBKEY_PREFIX;
+      domPrefix.value = "";
       domPrefix.style.display = 'none';
 
       // Show Import button, hide access button
@@ -800,10 +1403,40 @@
       }
     }
 
-    async function guiImportWallet() {
-      // If we don't have a DB wallet: prompt an import
-      if (!hasEncryptedWallet()) return importWallet();
+    function onPrivateKeyChanged() {
+      if (hasEncryptedWallet()) return;
+      // Check whether the length of the string is 128 bytes (that's the length of ciphered plain texts)
+      // and it doesn't have any spaces (would be a mnemonic seed)
+      const fContainsSpaces = domPrivKey.value.includes(" ");
+      domPrivKeyPassword.hidden = domPrivKey.value.length !== 128 || fContainsSpaces;
 
+      // Uncloak the private input IF spaces are detected, to make Seed Phrases easier to input and verify
+      domPrivKey.setAttribute('type', fContainsSpaces ? 'text' : 'password');
+    }
+
+    async function guiImportWallet() {
+      const fEncrypted = domPrivKey.value.length === 128;
+
+      // If we are in testnet: prompt an import
+      if (cChainParams.current.isTestnet) return importWallet();
+
+      // If we don't have a DB wallet and the input is plain: prompt an import
+      if (!hasEncryptedWallet() && !fEncrypted) return importWallet();
+
+      // If we don't have a DB wallet and the input is ciphered: 
+      const strPrivKey = domPrivKey.value
+      const strPassword = domPrivKeyPassword.value;
+      if (!hasEncryptedWallet() && fEncrypted) {
+        const strDecWIF = await decrypt(strPrivKey, strPassword);
+        if (!strDecWIF || strDecWIF === "decryption failed!") {
+          return createAlert('warning', ALERTS.FAILED_TO_IMPORT, [], 6000);
+        } else {
+          localStorage.setItem("encwif", strPrivKey);
+          return importWallet({
+            newWif: strDecWIF
+          });
+        }
+      }
       // Prompt for decryption of the existing wallet
       const fHasWallet = await decryptWallet(domPrivKey.value);
 
@@ -812,6 +1445,9 @@
     }
 
     function guiEncryptWallet() {
+      // Disable wallet encryption in testnet mode
+      if (cChainParams.current.isTestnet) return createAlert('warning', ALERTS.TESTNET_ENCRYPTION_DISABLED, [], 2500);
+
       // Show our inputs if we haven't already
       if (domEncryptPasswordBox.style.display === 'none') {
         // Return the display to it's class form
@@ -821,21 +1457,95 @@
         // Fetch our inputs, ensure they're of decent entropy + match eachother
         const strPass = domEncryptPasswordFirst.value,
               strPassRetype = domEncryptPasswordSecond.value;
-        if (strPass.length < MIN_PASS_LENGTH) return createAlert('warning', 'That password is a little short!<br>' +
-                                                                            'Use at least <b>' + MIN_PASS_LENGTH + ' characters.</b>', 4000);
-        if (strPass !== strPassRetype) return createAlert('warning', 'Your passwords don\'t match!', 2250);
+        if (strPass.length < MIN_PASS_LENGTH) return createAlert('warning', ALERTS.PASSWORD_TOO_SMALL, [{"MIN_PASS_LENGTH" : MIN_PASS_LENGTH}], 4000);
+        if (strPass !== strPassRetype) return createAlert('warning', ALERTS.PASSWORD_DOESNT_MATCH, [], 2250);
         encryptWallet(strPass);
-        createAlert('success', '<b>You\'re Secured! 🔐</b><br>Nice stuff, Armoured MARIAian!', 5500);
+        createAlert('success', ALERTS.NEW_PASSWORD_SUCCESS, [], 5500);
       }
     }
 
-    function checkVanity() {
-      // Loosely check if the vanity address is valid
-      if (!domPrefix.value.length) return domPrefix.value = PUBKEY_PREFIX;
-      if (!domPrefix.value.startsWith(PUBKEY_PREFIX)) {
-        // Prefix doesnt match, splice it into the string
-        domPrefix.value = PUBKEY_PREFIX + domPrefix.value.substr(1);
+    function createAddressConfirmation(address) {
+      return `Please confirm this is the address you see on your ${strHardwareName}.
+              <div class="seed-phrase">${address}</div>`;
+    }
+
+    function createTxConfirmation(outputs) {
+      let strHtml = "Confirm this transaction matches the one on your " + strHardwareName +  ".";
+      for (const output of outputs) {
+        strHtml += `<br> <br> You will send <b>${output[1].toFixed(2)} ${cChainParams.current.TICKER}</b> to <div class="inline-address">${output[0]}</div>`
       }
+      return strHtml;
+    }
+
+    async function toggleExportUI() {
+      domExportDiv.hidden = !domExportDiv.hidden;
+      if (!domExportDiv.hidden) {
+        domExportKey.innerText = hasEncryptedWallet() ? localStorage.getItem("encwif") : masterKey.keyToBackup;
+      } else {
+        domExportKey.innerText = "";
+      }
+    }
+    
+    let addressIndex = 0;
+    async function isYourAddress(address){
+      let i=0;
+      while(i<addressIndex){
+        const path = getDerivationPath(masterKey.isHardwareWallet, 0, 0, i);
+        const testAddress = await masterKey.getAddress(path);
+        if(address===testAddress){
+          return [true,path];
+        }
+        i++;
+      }
+      return [false,0];
+    }
+    async function getNewAddress({updateGUI = false, verify = false} = {}) {
+      const last = lastWallet || 0;
+      addressIndex = addressIndex > last ? addressIndex : last + 1;
+      if (addressIndex - last > MAX_ACCOUNT_GAP) {
+        // If the user creates more than ${MAX_ACCOUNT_GAP} empty wallets we will not be able to sync them!
+        addressIndex = last;
+      }
+      const path = getDerivationPath(masterKey.isHardwareWallet, 0, 0, addressIndex);
+      // Use Xpub?
+      const address = await masterKey.getAddress(path);
+      if (verify && masterKey.isHardwareWallet) {
+        // Generate address to present to the user without asking to verify
+        const confAddress = await confirmPopup({
+          title: ALERTS.CONFIRM_POPUP_VERIFY_ADDR,
+          html: createAddressConfirmation(address),
+          resolvePromise: masterKey.getAddress(path, { verify })
+        });
+        if (address !== confAddress) {
+          throw new Error("User did not verify address");
+        }
+      }
+
+      if (updateGUI) {
+        domGuiAddress.innerText = address;
+        createQR('pivx:' + address, domModalQR);
+        domModalQrLabel.innerHTML = 'pivx:' + address;
+        domModalQR.firstChild.style.width = "100%";
+        domModalQR.firstChild.style.height = "auto";
+        domModalQR.firstChild.style.imageRendering = "crisp-edges";
+        document.getElementById('clipboard').value = address;
+      }
+      addressIndex++;
+      return [address,path];
+    }
+
+    function checkVanity() {
+        var e = event || window.event;  // get event object
+        var key = e.keyCode || e.which; // get key cross-browser
+        var char = String.fromCharCode(key).trim(); // convert key to char
+        if(char.length == 0) return;
+
+        // Ensure the input is base58 compatible
+        if (!MAP_B58.toLowerCase().includes(char.toLowerCase())) {
+          if (e.preventDefault) e.preventDefault();
+          e.returnValue = false;
+          return createAlert('warning',ALERTS.UNSUPPORTED_CHARACTER, [{"char" : char}], 3500);
+        }
     }
 
     let isVanityGenerating = false;
@@ -855,28 +1565,30 @@
 
     async function generateVanityWallet() {
       if (isVanityGenerating) return stopSearch();
-      if (typeof(Worker) === "undefined") return alert('This browser doesn\'t support Web Workers (multi-threaded JS), unfortunately you cannot generate Vanity wallets!');
+      if (typeof(Worker) === "undefined") return createAlert('error', ALERTS.UNSUPPORTED_WEBWORKERS, [], 7500);
       // Generate a vanity address with the given prefix
       if (domPrefix.value.length === 0 || domPrefix.style.display === 'none') {
         // No prefix, display the intro!
-        domPrefix.placeholder = 'Custom Prefix (' + PUBKEY_PREFIX + ' ...)';
         domPrefix.style.display = 'block';
         domGenKeyWarning.style.display = 'none';
-        domPrivateTxt.innerHTML = "~";
         domGuiAddress.innerHTML = "~";
         domPrefix.focus();
       } else {
+        // Remove spaces from prefix
+        domPrefix.value = domPrefix.value.replace(/ /g, "");
+
+        // Cache a lowercase equivilent for lower-entropy comparisons (a case-insensitive search is ALOT faster!) and strip accidental spaces
+        const nInsensitivePrefix = domPrefix.value.toLowerCase();
+        const nPrefixLen = nInsensitivePrefix.length;
+
         // Ensure the input is base58 compatible
         for (const char of domPrefix.value) {
-          if (!MAP_B58.includes(char)) return alert("The character '" + char + "' is unsupported in addresses! (Not Base58 compatible)");
+          if (!MAP_B58.toLowerCase().includes(char.toLowerCase())) return createAlert('warning',ALERTS.UNSUPPORTED_CHARACTER, [{"char" : char}], 3500);
         }
         // We also don't want users to be mining addresses for years... so cap the letters to four until the generator is more optimized
-        if (domPrefix.value.length > 6) return alert("This is a long name! This would take a LONG time to find, please choose a shorter name!");
+        if (domPrefix.value.length > 5) return createAlert('warning', ALERTS.UNSUPPORTED_CHARACTER, [{"char" : char}], 3500);
         isVanityGenerating = true;
         domPrefix.disabled = true;
-        // Cache a lowercase equivilent for lower-entropy comparisons (a case-insensitive search is ALOT faster!) and strip accidental spaces
-        const nInsensitivePrefix = domPrefix.value.toLowerCase().replace(/ /g, "");
-        const nPrefixLen = nInsensitivePrefix.length;
         let attempts = 0;
 
         // Setup workers
@@ -885,6 +1597,7 @@
         while (arrWorkers.length < nThreads) {
           arrWorkers.push(new Worker("scripts/vanitygen_worker.js"));
           arrWorkers[arrWorkers.length - 1].onmessage = (event) => checkResult(event.data);
+          arrWorkers[arrWorkers.length - 1].postMessage(cChainParams.current.PUBKEY_ADDRESS);
         }
 
         // GUI Updater
@@ -895,8 +1608,11 @@
 
         function checkResult(data) {
           attempts++;
-          if (data.pub.substr(0, nPrefixLen).toLowerCase() == nInsensitivePrefix) {
-            importWallet(data.priv, true);
+          if (data.pub.substr(1, nPrefixLen).toLowerCase() == nInsensitivePrefix) {
+            importWallet({
+              newWif: data.priv,
+              fRaw: true
+            });
             stopSearch();
             domGuiBalance.innerHTML = "0";
             domGuiBalanceBox.style.fontSize = "x-large";
@@ -911,17 +1627,34 @@
       domID.style.display = domID.style.display === 'block' ? 'none' : 'block';
     }
 
+    function createAlertWithFalse() {
+      createAlert(...arguments);
+      return false;
+    }
+
+    function validateAmount(nAmountSats, nMinSats = 10000) {
+      // Validate the amount is a valid number, and meets the minimum (if any)
+      if (nAmountSats < nMinSats || isNaN(nAmountSats))
+        return createAlertWithFalse('warning', ALERTS.INVALID_AMOUNT + ALERTS.VALIDATE_AMOUNT_LOW, [{"minimumAmount" : (nMinSats / COIN)}, {"coinTicker" : cChainParams.current.TICKER}], 2500);
+
+      // Validate the amount in Satoshi terms meets the coin's native decimal depth
+      if (!Number.isSafeInteger(nAmountSats))
+        return createAlertWithFalse('warning', ALERTS.INVALID_AMOUNT + '<br>' + ALERTS.VALIDATE_AMOUNT_DECIMAL,[{"coinDecimal" : COIN_DECIMALS}], 2500);
+
+      // Amount looks valid!
+      return true;
+    }
+
     function undelegateGUI() {
       // Verify the amount
-      const nAmount = Math.round(Number(document.getElementById('undelegateAmount').value.trim()) * COIN);
-      if (nAmount < 0.01 * COIN || isNaN(nAmount)) return createAlert('warning', '<b>Invalid amount!</b><br>Minimum amount is 0.01 MARIA!', 2500);
-      if (!Number.isSafeInteger(nAmount))   return createAlert('warning', '<b>Invalid amount!</b><br>8 decimal limit exceeded', 2500);
+      const nAmount = Math.round(Number(domGuiUndelegateAmount.value.trim()) * COIN);
+      if(!validateAmount(nAmount)) return;
       undelegate(nAmount);
     }
 
-    function undelegate(nValue) {
+    async function undelegate(nValue) {
       if (!hasWalletUnlocked(true)) return;
-
+      
       // Construct a TX and fetch Cold inputs
       const nBalance = getStakingBalance();
       const cTx = bitjs.transaction();
@@ -931,34 +1664,101 @@
       // Compute fee and change (or lack thereof)
       const nFee = getFee(cTx.serialize().length);
       const nChange = cCoinControl.nValue - (nFee + nValue);
-      if (nChange > 1.01 * COIN) {
+      const fReDelegateChange = nChange > 1.01 * COIN;
+      let reDelegateAddress;
+      let reDelegateAddressPath;
+      if (fReDelegateChange) {
         // Enough change to resume cold staking, so we'll re-delegate change to the cold staking address
-        // Ensure the user has an address set - if not, request one!
-        if (!askForCSAddr()) return;
-
-        // Sanity
-        if (cachedColdStakeAddr.length !== 34 || !cachedColdStakeAddr.startsWith('S')) {
+         // Ensure the user has an address set - if not, request one!, Sanity
+        if (!cachedColdStakeAddr || cachedColdStakeAddr.length !== 34 || !cachedColdStakeAddr.startsWith(cChainParams.current.STAKING_PREFIX)) {
           askForCSAddr(true);
-          return createAlert('success', '<b>Staking Address set!</b><br>Now go ahead and unstake!');
+          return createAlert('success', ALERTS.SUCCESS_STAKING_ADDR ,[]);
         }
-
         // The re-delegated change output
-        cTx.addcoldstakingoutput(publicKeyForNetwork, cachedColdStakeAddr, nChange / COIN);
+        [reDelegateAddress,reDelegateAddressPath] = await getNewAddress();
+        cTx.addcoldstakingoutput(reDelegateAddress, cachedColdStakeAddr, nChange / COIN);
         console.log('Re-delegated delegation spend change!');
       } else {
-        // Not enough change to cold stake, so we'll just unstake everything
-        cTx.addoutput(publicKeyForNetwork, nChange / COIN);
+        // Not enough change to cold stake, so we'll just unstake everything (and deduct the fee from the value)
+        nValue -= nFee;
         console.log('Spent all CS dust into redeem address!');
       }
 
+      const [outputKey,outputKeyPath] = await getNewAddress();
       // The primary Cold-to-Public output
-      cTx.addoutput(publicKeyForNetwork, nValue / COIN);
+      cTx.addoutput(outputKey, nValue / COIN);
 
       // Debug-only verbose response
-      if (debug) domHumanReadable.innerHTML = "Balance: " + (nBalance / COIN) + "<br>Fee: " + (nFee / COIN) + "<br>To: " + address + "<br>Sent: " + (nValue / COIN) + (nChange > 0 ? "<br>Change Address: " + publicKeyForNetwork + "<br>Change: " + (nChange / COIN) : "");
+      if (debug) domHumanReadable.innerHTML = "Balance: " + (nBalance / COIN) + "<br>Fee: " + (nFee / COIN) + "<br>To: " + outputKey + "<br>Sent: " + (nValue / COIN) + (nChange > 0 ? "<br>Change Address: " + (fReDelegateChange ? cachedColdStakeAddr : outputKey) + "<br>Change: " + (nChange / COIN) : "");
 
-      // Sign and broadcast!
-      sendTransaction(cTx.sign(privateKeyForTransactions, 1, 'coldstake'), "<b>Delegation successfully spent!</b><br>Please wait for confirmations.");
+      if (hasHardwareWallet()) {
+        // Format the inputs how the Ledger SDK prefers
+        const arrInputs = [];
+        const arrAssociatedKeysets = [];
+        for (const cInput of cTx.inputs) {
+          const cInputFull = await getTxInfo(cInput.outpoint.hash);
+          arrInputs.push([await cHardwareWallet.splitTransaction(cInputFull.hex), cInput.outpoint.index]);
+          arrAssociatedKeysets.push(cInput.path);
+        }
+
+        // Construct the Ledger transaction
+        const cLedgerTx = await cHardwareWallet.splitTransaction(cTx.serialize());
+        const strOutputScriptHex = await cHardwareWallet
+          .serializeTransactionOutputs(cLedgerTx)
+          .toString("hex");
+
+        // Sign the transaction via Ledger
+        createAlert("info", ALERTS.CONFIRM_UNSTAKE_H_WALLET, [{"strHardwareName" : strHardwareName}], 7500);
+        const cLedgerSignedTx = await cHardwareWallet.createPaymentTransactionNew({
+          inputs: arrInputs,
+          associatedKeysets: arrAssociatedKeysets,
+          outputScriptHex: strOutputScriptHex,
+        });
+        const nInputLen = cTx.inputs.length;
+
+        // Put public key bytes instead of [3,195,174...]
+        const arrSignedTxBytes = Crypto.util.hexToBytes(cLedgerSignedTx);
+        const arrPubkey = findCompressedPubKey(arrSignedTxBytes);
+        const arrPubkeyWithScriptLen = addScriptLength(arrSignedTxBytes, arrPubkey, nInputLen);
+        const arrPubkeyWithScript = addExtraBytes(arrPubkeyWithScriptLen, arrPubkey, nInputLen);
+
+        const strSerialisedTx = Crypto.util.bytesToHex(arrPubkeyWithScript);
+
+        // Broadcast the Hardware (Ledger) TX
+        const result = await sendTransaction(strSerialisedTx, "<b>Delegation successfully spent!</b>");
+        if(result){
+          for(const tx of cTx.inputs){
+            mempool.autoRemoveUTXO({id: tx.outpoint.hash,path: tx.path,vout: tx.outpoint.index})
+          }
+          // Add our undelegation + change re-delegation (if any) to the local mempool
+          const futureTxid=swapHEXEndian(await hash(Crypto.util.hexToBytes((await hash((Crypto.util.hexToBytes(strSerialisedTx)))))));
+          if(fReDelegateChange){
+            mempool.addUTXO({id: futureTxid,path: reDelegateAddressPath,script:Crypto.util.bytesToHex(cTx.outputs[0].script) ,sats: nChange,vout: 0,status: Mempool.PENDING_COLD});
+            mempool.addUTXO({id: futureTxid,path: outputKeyPath,script:Crypto.util.bytesToHex(cTx.outputs[1].script) ,sats: nValue,vout: 1,status: Mempool.PENDING});
+          }else{
+            mempool.addUTXO({id: futureTxid,path: outputKeyPath,sats: nValue,script:Crypto.util.bytesToHex(cTx.outputs[0].script),vout: 0,status: Mempool.PENDING});
+          }
+        }
+      } else {
+         let sign= await cTx.sign(masterKey, 1, 'coldstake');
+        // Broadcast the software TX
+  
+        const result = await sendTransaction(sign, "<b>Delegation successfully spent!</b>");
+        if(result){
+          for(const tx of cTx.inputs){
+            mempool.autoRemoveUTXO({id: tx.outpoint.hash,path: tx.path,vout: tx.outpoint.index})
+          }
+          // Add our undelegation + change re-delegation (if any) to the local mempool
+          const futureTxid=swapHEXEndian(await hash(Crypto.util.hexToBytes((await hash((Crypto.util.hexToBytes(sign)))))));
+          if(fReDelegateChange){
+            mempool.addUTXO({id: futureTxid,path:reDelegateAddressPath,script:Crypto.util.bytesToHex(cTx.outputs[0].script) ,sats: nChange,vout: 0,status: Mempool.PENDING_COLD});
+            mempool.addUTXO({id: futureTxid,path: outputKeyPath,script:Crypto.util.bytesToHex(cTx.outputs[1].script) ,sats: nValue,vout: 1,status: Mempool.PENDING});
+          }else{
+            mempool.addUTXO({id: futureTxid,path: outputKeyPath,sats: nValue,script:Crypto.util.bytesToHex(cTx.outputs[0].script),vout: 0,status: Mempool.PENDING});
+          }
+        }
+      }
+
       domGenIt.innerHTML = "Continue";
     }
 
@@ -974,23 +1774,22 @@
     }
 
     function delegateGUI() {
-      // Verify the amount
-      const nAmount = Math.round(Number(document.getElementById('delegateAmount').value.trim()) * COIN);
-      if (nAmount < COIN || isNaN(nAmount)) return createAlert('warning', '<b>Invalid amount!</b><br>Minimum amount is 1 MARIA!', 2500);
-      if (!Number.isSafeInteger(nAmount))   return createAlert('warning', '<b>Invalid amount!</b><br>8 decimal limit exceeded', 2500);
+      // Verify the amount; Delegations must be a minimum of 1 MARIA, enforced by the network
+      const nAmount = Number(domGuiDelegateAmount.value.trim()) * COIN;
+      if (!validateAmount(nAmount, COIN)) return;
 
       // Ensure the user has an address set - if not, request one!
       if (!askForCSAddr()) return;      
 
       // Sanity
-      if (cachedColdStakeAddr.length !== 34 || !cachedColdStakeAddr.startsWith('S')) {
+      if (cachedColdStakeAddr.length !== 34 || !cachedColdStakeAddr.startsWith(cChainParams.current.STAKING_PREFIX)) {
         askForCSAddr(true);
-        return createAlert('success', '<b>Staking Address set!</b><br>Now go ahead and stake!');
+        return createAlert('success', ALERTS.SUCCESS_STAKING_ADDR_SET, []);
       }
       delegate(nAmount, cachedColdStakeAddr);
     }
 
-    function delegate(nValue, coldAddr) {
+    async function delegate(nValue, coldAddr) {
       if (!hasWalletUnlocked(true)) return;
 
       // Construct a TX and fetch Standard inputs
@@ -1002,22 +1801,85 @@
       // Compute fee and change (or lack thereof)
       const nFee = getFee(cTx.serialize().length);
       const nChange = cCoinControl.nValue - (nFee + nValue);
+      const [changeAddress,changeAddressPath]= await getNewAddress();
       if (nChange > 0) {
         // Change output
-        cTx.addoutput(publicKeyForNetwork, nChange / COIN);
+        cTx.addoutput(changeAddress, nChange / COIN);
       } else {
         // We're sending alot! So we deduct the fee from the send amount. There's not enough change to pay it with!
         nValue -= nFee;
       }
 
       // The primary Standard-to-Cold output
-      cTx.addcoldstakingoutput(publicKeyForNetwork, coldAddr, nValue / COIN);
+      const [primaryAddress, primaryAddressPath]= await getNewAddress();
+      cTx.addcoldstakingoutput(primaryAddress, coldAddr, nValue / COIN);
 
       // Debug-only verbose response
-      if (debug) domHumanReadable.innerHTML = "Balance: " + (nBalance / COIN) + "<br>Fee: " + (nFee / COIN) + "<br>To: " + address + "<br>Sent: " + (nValue / COIN) + (nChange > 0 ? "<br>Change Address: " + publicKeyForNetwork + "<br>Change: " + (nChange / COIN) : "");
+      if (debug) domHumanReadable.innerHTML = "Balance: " + (nBalance / COIN) + "<br>Fee: " + (nFee / COIN) + "<br>To: " + coldAddr + "<br>Sent: " + (nValue / COIN) + (nChange > 0 ? "<br>Change Address: " + changeAddress + "<br>Change: " + (nChange / COIN) : "");
 
       // Sign and broadcast!
-      sendTransaction(cTx.sign(privateKeyForTransactions, 1), "<b>Delegation successful!</b><br>Please wait for confirmations, enjoy your staking!");
+      if (hasHardwareWallet()) {
+        // Format the inputs how the Ledger SDK prefers
+        const arrInputs = [];
+        const arrAssociatedKeysets = [];
+        for (const cInput of cTx.inputs) {
+          const cInputFull = await getTxInfo(cInput.outpoint.hash);
+          arrInputs.push([await cHardwareWallet.splitTransaction(cInputFull.hex), cInput.outpoint.index]);
+          arrAssociatedKeysets.push(cInput.path);
+        }
+
+        // Construct the Ledger transaction
+        const cLedgerTx = await cHardwareWallet.splitTransaction(cTx.serialize());
+        const strOutputScriptHex = await cHardwareWallet
+          .serializeTransactionOutputs(cLedgerTx)
+          .toString("hex");
+
+        // Sign the transaction via Ledger
+        createAlert("info", ALERTS.CONFIRM_UNSTAKE_H_WALLET, [{"strHardwareName" : strHardwareName}], 7500);
+        const strSerialisedTx = await cHardwareWallet.createPaymentTransactionNew({
+          inputs: arrInputs,
+          associatedKeysets: arrAssociatedKeysets,
+          outputScriptHex: strOutputScriptHex,
+        });
+        
+     
+        // Broadcast the Hardware (Ledger) tx
+        const result = await sendTransaction(strSerialisedTx, "<b>Delegation successful!</b>");
+        if(result){
+          for(const tx of cTx.inputs){
+            mempool.autoRemoveUTXO({id: tx.outpoint.hash,path: tx.path,vout: tx.outpoint.index})
+          }
+          const futureTxid=swapHEXEndian(await hash(Crypto.util.hexToBytes((await hash((Crypto.util.hexToBytes(strSerialisedTx)))))));
+      
+          if(nChange>0){
+            mempool.addUTXO({id: futureTxid,path: changeAddressPath,sats: nChange,script:Crypto.util.bytesToHex(cTx.outputs[0].script),vout: 0,status: Mempool.PENDING});
+            mempool.addUTXO({id: futureTxid,path: primaryAddressPath,sats: nValue,vout: 1,script:Crypto.util.bytesToHex(cTx.outputs[1].script),status: Mempool.PENDING_COLD});
+          }else{
+            mempool.addUTXO({id: futureTxid,path: primaryAddressPath,script: Crypto.util.bytesToHex(cTx.outputs[0].script),sats: nValue,vout: 0,status: Mempool.PENDING_COLD});
+          }
+        }
+      
+      } else {
+        
+        const sign= await cTx.sign(masterKey, 1);
+    
+        // Broadcast the software TX
+        const result = await sendTransaction(sign, "<b>Delegation successful!</b>");
+        if(result){
+          for(const tx of cTx.inputs){
+            mempool.autoRemoveUTXO({id: tx.outpoint.hash,path: tx.path,vout: tx.outpoint.index})
+          }
+          // Add our delegation + change (if any) to the local mempool
+          const futureTxid=swapHEXEndian(await hash(Crypto.util.hexToBytes((await hash((Crypto.util.hexToBytes(sign)))))));
+          if(nChange>0){
+            mempool.addUTXO({id: futureTxid,path: changeAddressPath,sats: nChange,script:Crypto.util.bytesToHex(cTx.outputs[0].script),vout: 0,status: Mempool.PENDING});
+            mempool.addUTXO({id: futureTxid,path: primaryAddressPath,sats: nValue,vout: 1,script:Crypto.util.bytesToHex(cTx.outputs[1].script),status: Mempool.PENDING_COLD});
+          }else{
+            mempool.addUTXO({id: futureTxid,path: primaryAddressPath,script: Crypto.util.bytesToHex(cTx.outputs[0].script),sats: nValue,vout: 0,status: Mempool.PENDING_COLD});
+          }
+        }
+        
+      }
       domGenIt.innerHTML = "Continue";
     }
 
@@ -1026,99 +1888,283 @@
     function ccSuccess  (data)     { return { success: true, ...data } };
 
     function chooseUTXOs(cTx, nTotalSatsRequired = 0, nMinInputSize = 0, fColdOnly = false) {
-      console.log("Constructing TX of value: " + (nTotalSatsRequired / COIN) + " MARIA");
+      console.log("Constructing TX of value: " + (nTotalSatsRequired / COIN) + " " + cChainParams.current.TICKER);
 
       // Select the UTXO type bucket
-      const arrUTXOs = fColdOnly ? arrDelegatedUTXOs : cachedUTXOs;
+
+      //const arrUTXOs
+      const arrUTXOs = mempool.UTXOs;
 
       // Select and return UTXO pointers (filters applied)
       const cCoinControl = { nValue: 0, nChange: 0, arrSelectedUTXOs: [] }
-      for (const cUTXO of arrUTXOs) {
+      
+      let spent=[]
+      for(let i=0; i< arrUTXOs.length;i++){
+        const cUTXO= arrUTXOs[i]
+        if(!fColdOnly){
+          if(cUTXO.status!==Mempool.CONFIRMED && cUTXO.status!==Mempool.REWARD && cUTXO.status!==Mempool.PENDING){
+            continue;
+          }
+          if(cUTXO.status===Mempool.REWARD && !Mempool.isValidReward(cUTXO)){
+            continue
+          }
+        }
+        if(fColdOnly && cUTXO.status!==Mempool.DELEGATE && cUTXO.status!==Mempool.PENDING_COLD) continue;
+        // Don't spend locked Masternode collaterals
+        if (isMasternodeUTXO(cUTXO)) continue; //CHANGE THIS
+
         // Have we met the required sats threshold?
-        if (cCoinControl.nValue >= nTotalSatsRequired) {
+        if (cCoinControl.nValue >= nTotalSatsRequired + getFee(cTx.serialize().length)) {
           // Required Coin Control value met, yahoo!
-          console.log("Coin Control: TX Constructed! Selected " + cCoinControl.arrSelectedUTXOs.length + " input(s) (" + (cCoinControl.nValue / COIN) + " MARIA)");
+          console.log("Coin Control: TX Constructed! Selected " + cCoinControl.arrSelectedUTXOs.length + " input(s) (" + (cCoinControl.nValue / COIN) + " " + cChainParams.current.TICKER + ")");
           break;
         }
+
         // Does the UTXO meet size requirements?
         if (cUTXO.sats < nMinInputSize) continue;
         
         // Push UTXO and cache new total value
         cCoinControl.arrSelectedUTXOs.push(cUTXO);
         cCoinControl.nValue += cUTXO.sats;
-        console.log("Coin Control: Selected input " + cUTXO.id.substr(0, 6) + "(" + cUTXO.vout + ")... (Added " + (cUTXO.sats / COIN) + " MARIA - Total: " + (cCoinControl.nValue / COIN) + ")");
-      };
+        console.log("Coin Control: Selected input " + cUTXO.id.substr(0, 6) + "(" + cUTXO.vout + ")... (Added " + (cUTXO.sats / COIN) + " " + cChainParams.current.TICKER + " - Total: " + (cCoinControl.nValue / COIN) + ")");
 
-      // If we don't have enough value: leave the cTx alone and return false
+        // Stuff UTXO into the TX
+        cTx.addinput({
+          txid: cUTXO.id,
+          index: cUTXO.vout,
+          script: cUTXO.script,
+          path: cUTXO.path
+        });
+        spent.push(cUTXO);
+      }
+
+      // if we don't have enough value: return false
       if (cCoinControl.nValue < nTotalSatsRequired) return ccError("Balance is too small! (Missing " + (cCoinControl.nValue - nTotalSatsRequired).toLocaleString('en-gb') + " sats)");
 
-      // Reaching here: we have sufficient UTXOs, stuff them into the TX, calc final misc data and return!
-      for (const cUTXO of cCoinControl.arrSelectedUTXOs) cTx.addinput(cUTXO.id, cUTXO.vout, cUTXO.script);
+      // Reaching here: we have sufficient UTXOs, calc final misc data and return!
       cCoinControl.nChange = nTotalSatsRequired - cCoinControl.nValue;
       return ccSuccess(cCoinControl);
     }
 
-    function createTxGUI() {
-      if (!hasWalletUnlocked(true)) return;
+  function isMasternodeUTXO(cUTXO, masternode = null) {
+      const cMasternode = masternode || JSON.parse(localStorage.getItem("masternode"));
+      if (cMasternode) {
+	  const { collateralTxId, outidx } = cMasternode;
+	  return collateralTxId === cUTXO.id && cUTXO.vout === outidx;
+      } else {
+	  return false;
+      }
+    }
 
+
+    async function createTxGUI() {
+      if (!hasWalletUnlocked(true)) return;
+      
       // Clear the inputs on 'Continue'
       if (domGenIt.innerHTML === 'Continue') {
-        domGenIt.innerHTML = 'Send Transaction';
-        domTxOutput.innerHTML = '';
-        domHumanReadable.innerHTML = "";
-        domValue1s.value = "";
-        domAddress1s.value = "";
-        domReqDesc.value = '';
-        domReqDisplay.style.display = 'none';
-        return;
+	domGenIt.innerHTML = 'Send Transaction';
+	domTxOutput.innerHTML = '';
+	domHumanReadable.innerHTML = "";
+	domValue1s.value = "";
+	domAddress1s.value = "";
+	domReqDesc.value = '';
+	domReqDisplay.style.display = 'none';
+	return;
       }
-
       // Sanity check the address
       const address = domAddress1s.value.trim();
       // If Staking address: redirect to staking page
-      if (address.startsWith("S")) {
-        createAlert('warning', 'Here, use the <b>Stake</b> screen, not the Send screen!', 7500);
-        return domStakeTab.click();
+      if (address.startsWith(cChainParams.current.STAKING_PREFIX)) {
+	createAlert('warning', ALERTS.STAKE_NOT_SEND, [], 7500);
+	return domStakeTab.click();
       }
-      if (address.length !== 34)              return createAlert('warning', '<b>Invalid MARIA address!<b><br>Bad length (' + address.length + ')', 2500);
-      if (!address.startsWith(PUBKEY_PREFIX)) return createAlert('warning', '<b>Invalid MARIA address!<b><br>Bad prefix ' + address[0] + ' (Should start with ' + PUBKEY_PREFIX + ')', 3500);
-  
+      if (address.length !== 34) return createAlert('warning', ALERTS.BAD_ADDR_LENGTH,[{"addressLength" : address.length}], 2500);
+      if (!cChainParams.current.PUBKEY_PREFIX.includes(address[0])) return createAlert('warning', ALERTS.BAD_ADDR_PREFIX, [{"address" : address[0]},{"addressPrefix" : cChainParams.current.PUBKEY_PREFIX.join(' or ')}], 3500);
+      if (!bitjs.isValidDestination(address,cChainParams.current.PUBKEY_ADDRESS)) return createAlert('warning', ALERTS.INVALID_ADDRESS, [{"address" :address}], 3500);
+      
       // Sanity check the amount
       let nValue = Math.round(Number(domValue1s.value.trim()) * COIN);
-      if (nValue <= 0 || isNaN(nValue))  return createAlert('warning', '<b>Invalid amount!</b><br>You can\'t send \'nothing\'!', 2500);
-      if (!Number.isSafeInteger(nValue)) return createAlert('warning', '<b>Invalid amount!</b><br>8 decimal limit exceeded', 2500);
-
+      if (nValue <= 0 || isNaN(nValue))  return createAlert('warning', ALERTS.INVALID_AMOUNT +ALERTS.SENT_NOTHING, [], 2500);
+      if (!Number.isSafeInteger(nValue)) return createAlert('warning', ALERTS.INVALID_AMOUNT +ALERTS.MORE_THEN_8_DECIMALS, [], 2500);
+      
       // Construct a TX and fetch Standard inputs
       const nBalance = getBalance();
       const cTx = bitjs.transaction();
       const cCoinControl = chooseUTXOs(cTx, nValue, 0, false);
       if (!cCoinControl.success) return alert(cCoinControl.msg);
-
       // Compute fee
       const nFee = getFee(cTx.serialize().length);
-
+      
       // Compute change (or lack thereof)
       const nChange = cCoinControl.nValue - (nFee + nValue);
+      const [changeAddress,changeAddressPath] = await getNewAddress({verify: masterKey.isHardwareWallet});
+
+      const outputs = [];
       if (nChange > 0) {
         // Change output
-        cTx.addoutput(publicKeyForNetwork, nChange / COIN);
+        outputs.push([changeAddress, nChange / COIN]);
       } else {
         // We're sending alot! So we deduct the fee from the send amount. There's not enough change to pay it with!
         nValue -= nFee;
       }
-
+      
       // Primary output (receiver)
-      cTx.addoutput(address, nValue / COIN);
+      outputs.push([address, nValue / COIN]);
       
       // Debug-only verbose response
-      if (debug) domHumanReadable.innerHTML = "Balance: " + (nBalance / COIN) + "<br>Fee: " + (nFee / COIN) + "<br>To: " + address + "<br>Sent: " + (nValue / COIN) + (nChange > 0 ? "<br>Change Address: " + publicKeyForNetwork + "<br>Change: " + (nChange / COIN) : "");
-      
+      if (debug) domHumanReadable.innerHTML = "Balance: " + (nBalance / COIN) + "<br>Fee: " + (nFee / COIN) + "<br>To: " + address + "<br>Sent: " + (nValue / COIN) + (nChange > 0 ? "<br>Change Address: " + changeAddress + "<br>Change: " + (nChange / COIN) : "");
+
+      // Add outputs to the Tx
+      for (const output of outputs) {
+        cTx.addoutput(output[0], output[1]);
+      }
+  
+
       // Sign and broadcast!
-      sendTransaction(cTx.sign(privateKeyForTransactions, 1));
+      if (!masterKey.isHardwareWallet) {
+        const sign = await cTx.sign(masterKey, 1);
+
+        const result = await sendTransaction(sign);
+        // Add our change (if any) to the local mempool
+        if(result){
+          
+          for(const tx of cTx.inputs){
+            mempool.autoRemoveUTXO({id: tx.outpoint.hash,path: tx.path,vout: tx.outpoint.index})
+          }
+          const futureTxid=swapHEXEndian(await hash(Crypto.util.hexToBytes((await hash((Crypto.util.hexToBytes(sign)))))));
+            
+          const [isYours,yourPath]= await isYourAddress(address);
+          if(nChange>0){
+            mempool.addUTXO({id: futureTxid,path: changeAddressPath,sats: nChange,script:Crypto.util.bytesToHex(cTx.outputs[0].script) ,vout: 0,status: Mempool.PENDING});
+            if(isYours){
+              mempool.addUTXO({id: futureTxid,path: yourPath,sats: nValue,vout: 1,script:Crypto.util.bytesToHex(cTx.outputs[1].script),status: Mempool.PENDING});
+            }
+          }else{
+            if(isYours){
+              mempool.addUTXO({id: futureTxid,path: yourPath,sats: nValue,vout: 0,script:Crypto.util.bytesToHex(cTx.outputs[0].script),status: Mempool.PENDING});
+            }
+          }
+        }  
+      } else {
+        // Format the inputs how the Ledger SDK prefers
+        const arrInputs = [];
+        const arrAssociatedKeysets = [];
+        for (const cInput of cTx.inputs) {
+          const cInputFull = await getTxInfo(cInput.outpoint.hash);
+          arrInputs.push([await cHardwareWallet.splitTransaction(cInputFull.hex), cInput.outpoint.index]);
+          arrAssociatedKeysets.push(cInput.path);
+        }
+        const cLedgerTx = await cHardwareWallet.splitTransaction(cTx.serialize());
+              const strOutputScriptHex = await cHardwareWallet
+          .serializeTransactionOutputs(cLedgerTx)
+          .toString("hex");
+
+        // Sign the transaction via Ledger
+        const strSerialisedTx = await confirmPopup(
+          {
+            title: ALERTS.CONFIRM_POPUP_TRANSACTION,
+            html: createTxConfirmation(outputs),
+            resolvePromise: cHardwareWallet.createPaymentTransactionNew({
+              inputs: arrInputs,
+              associatedKeysets: arrAssociatedKeysets,
+              outputScriptHex: strOutputScriptHex,
+            }),
+          }
+        );
+
+       
+        // Broadcast the Hardware (Ledger) TX
+        const result= await sendTransaction(strSerialisedTx);
+        if(result){
+          for(const tx of cTx.inputs){
+            mempool.autoRemoveUTXO({id: tx.outpoint.hash,path: tx.path,vout: tx.outpoint.index})
+          }
+         // Add our change (if any) to the local mempool
+         const [isYours,yourPath]= await isYourAddress(address);
+         const futureTxid=swapHEXEndian(await hash(Crypto.util.hexToBytes((await hash((Crypto.util.hexToBytes(strSerialisedTx)))))));
+         
+         if(nChange>0){
+          mempool.addUTXO({id: futureTxid,path: changeAddressPath,sats: nChange,script:Crypto.util.bytesToHex(cTx.outputs[0].script) ,vout: 0,status: Mempool.PENDING});        
+          if(isYours){
+              mempool.addUTXO({id: futureTxid,path: yourPath,sats: nValue,vout: 1,script:Crypto.util.bytesToHex(cTx.outputs[1].script),status: Mempool.PENDING});
+            }
+         }else{
+            if(isYours){
+              mempool.addUTXO({id: futureTxid,path: yourPath,sats: nValue,vout: 0,script:Crypto.util.bytesToHex(cTx.outputs[0].script),status: Mempool.PENDING});
+            }
+         }
+        }
+      }
       domGenIt.innerHTML = "Continue";
     }
 
-    function createRawTransaction() {
+    
+    function insert(arr, index, newItem) {
+      // part of the array before the specified index
+      return [...arr.slice(0, index),
+          // inserted item
+          newItem,
+          // part of the array after the specified index
+          ...arr.slice(index)
+         ]
+    }
+
+    function addScriptLength(arrTxBytes, arrTxBytes, nInputLen) {
+      let n_found = 0;
+      const new_transaction_bytes = arrTxBytes;
+      for (let i = 0; i < arrTxBytes.length; i++) {
+        if (arrTxBytes[i + 1] === 71 || arrTxBytes[i + 1] === 72 || arrTxBytes[i + 1] === 73) {
+          if (arrTxBytes[i + arrTxBytes[i]] === arrTxBytes[arrTxBytes.length - 1]){
+            new_transaction_bytes[i]++;
+            n_found++;
+            if (n_found === nInputLen) {
+              return new_transaction_bytes;
+            }
+          }
+        }
+      }
+    }
+
+    function findCompressedPubKey(arrTxBytes) {
+      const arrToFind = [1, 33];
+      for (let i = 0; i < arrTxBytes.length; i++) {
+        if (arrTxBytes[i] === arrToFind[0]) {
+          if (arrTxBytes[i + 1] === arrToFind[1]) {
+             const compressedPubKey = [];
+             for (let j = 0; j < 33; j++) {
+              compressedPubKey.push(arrTxBytes[i + 2 + j]);
+             }
+             return compressedPubKey;
+          }
+        }
+      }
+    }
+
+    function addExtraBytes(arrTxBytes, arrPubkeyBytes, nLen) {
+      let arrNewTxBytes = [];
+      let nFound = 0;
+      for (let i = 0; i < arrTxBytes.length; i++) {
+        arrNewTxBytes.push(arrTxBytes[i]);
+        let fFound = true;
+
+        if (nFound !== nLen) {
+          for (let j = 0; j < arrPubkeyBytes.length; j++) {
+            if (arrTxBytes[i + j] !== arrPubkeyBytes[j]) {
+              fFound = false;
+              break;
+            }
+          }
+
+          if (fFound) {
+            arrNewTxBytes = insert(arrNewTxBytes, arrNewTxBytes.length - 2, 0);
+            nFound++;
+          }
+        }
+      }
+      return arrNewTxBytes;
+    }
+
+    async function createRawTransaction() {
       // Prepare a TX
       const cTx = bitjs.transaction();
       const txid = document.getElementById("prevTrxHash").value;
@@ -1126,7 +2172,7 @@
       const script = document.getElementById("script").value;
 
       // Primary input
-      cTx.addinput(txid, index, script);
+      cTx.addinput({txid, index, script});
 
       // Primary output
       const strAddress = document.getElementById("address1").value;
@@ -1140,10 +2186,14 @@
 
       // Sign via WIF key
       const wif = document.getElementById("wif").value;
-      document.getElementById("rawTrx").value = cTx.sign(wif, 1); //SIGHASH_ALL DEFAULT 1
+      document.getElementById("rawTrx").value = await cTx.sign(wif, 1); //SIGHASH_ALL DEFAULT 1
     }
-
-    function openTab(evt, tabName) {
+    function addCellToTable(row,data){
+      let td=row.insertCell();
+      td.appendChild(document.createTextNode(data));
+      td.style.border = '1px solid black';
+    }
+    async function openTab(evt, tabName) {
       // Hide all screens and deactivate link highlights
       for (const domScreen of arrDomScreens) domScreen.style.display = "none";
       for (const domLink of arrDomScreenLinks) domLink.classList.remove("active");
@@ -1151,17 +2201,210 @@
       // Show and activate the given screen
       document.getElementById(tabName).style.display = "block";
       evt.currentTarget.classList.add("active");
-
+      
       // Close the navbar if it's not already closed
       if (!domNavbarToggler.className.includes("collapsed"))
         domNavbarToggler.click();
+      
+      if (tabName === "Governance") {
+	updateGovernanceTab();
+      }
+      if (tabName==="Masternode") {
+	updateMasternodeTab();
+      }  
+      
     }
-    domStart.click();
+  domStart.click();
+
+  async function updateGovernanceTab() {
+    const proposals= await Masternode.getProposals();
+    domGovProposalsTableBody.innerHTML="";
+    for (const proposal of proposals){
+      if(proposal.RemainingPaymentCount === 0){
+        continue;
+      }
+      const tr = domGovProposalsTableBody.insertRow();
+      const td1 = tr.insertCell();
+      // IMPORTANT: We must sanite all of our HTML or a rogue server or malicious proposal could perform a cross side scripting attack
+      td1.innerHTML=`<a class="active" href="${sanitizeHTML(proposal.URL)}"><b>${sanitizeHTML(proposal.Name)}</b></a>`
+      const td2 = tr.insertCell();
+      td2.innerHTML=`<b>${sanitizeHTML(proposal.MonthlyPayment)}</b> ${cChainParams.current.TICKER} <br>
+      <small> ${sanitizeHTML(proposal['RemainingPaymentCount'])} payments remaining of <b>${sanitizeHTML(proposal.TotalPayment)}</b> ${cChainParams.current.TICKER} total</small>`
+      const td3 = tr.insertCell();
+      let {Yeas, Nays} = proposal;
+      Yeas = parseInt(Yeas);
+      Nays = parseInt(Nays);
+      const percentage = Yeas + Nays !== 0 ? (Yeas / (Yeas + Nays)) * 100 : 0;
+      
+      td3.innerHTML=`<b>${percentage.toFixed(2)}%</b> <br>
+      <small> <b><div class="text-success" style="display:inline;"> ${Yeas} </div></b> /
+	  <b><div class="text-danger" style="display:inline;"> ${Nays} </div></b>
+      `;
+      const td4 = tr.insertCell();
+      //append vote buttons	  
+      const buttonNo = document.createElement('button');
+      buttonNo.className = "pivx-button-big";
+      buttonNo.innerText="No";
+      buttonNo.onclick = () => govVote(proposal.Hash, 2);
+      
+      const buttonYes = document.createElement('button');
+      buttonYes.className = "pivx-button-big";
+      buttonYes.innerText="Yes";
+      buttonYes.onclick = () => govVote(proposal.Hash, 1);
+      
+      td4.appendChild(buttonNo)
+      td4.appendChild(buttonYes)
+    }
+  }
+  
+  async function updateMasternodeTab() {
+    //TODO: IN A FUTURE ADD MULTI-MASTERNODE SUPPORT BY SAVING MNs with which you logged in the past.
+    // Ensure a wallet is loaded
+    domMnTextErrors.innerHTML = "";
+    domAccessMasternode.style.display = "none";
+    domCreateMasternode.style.display = "none";
+    domMnDashboard.style.display = "none";
+    
+    if (!masterKey) {
+      domMnTextErrors.innerHTML = "Please " + (hasEncryptedWallet() ? "unlock" : "import") + " your <b>COLLATERAL WALLET</b> first.";
+      return;
+    }
+    
+    if (masterKey.isHardwareWallet) {
+      domMnTxId.style.display = "none";
+      domMnTextErrors.innerHTML = "Ledger is not yet supported";
+      return;
+    }
+
+    if(!mempool.getConfirmed().length) {
+      domMnTextErrors.innerHTML = "Your wallet is empty or still loading, re-open the tab in a few seconds!";
+      return;
+    }
+    
+    let strMasternodeJSON = localStorage.getItem("masternode");
+    // If the collateral is missing (spent, or switched wallet) then remove the current MN
+    if (strMasternodeJSON) {
+      const cMasternode = JSON.parse(strMasternodeJSON);
+      if (!mempool.getConfirmed().find(utxo => isMasternodeUTXO(utxo, cMasternode))) {
+        localStorage.removeItem("masternode");
+	strMasternodeJSON = null;
+      }
+    }
+    
+    domControlMasternode.style.display = strMasternodeJSON ? "block" : "none";
+    
+    // first case: the wallet is not HD and it is not hardware, so in case the wallet has collateral the user can check its status and do simple stuff like voting
+    if (!masterKey.isHD) {
+      domMnAccessMasternodeText.innerHTML = masternodeLegacyAccessText;
+      domMnTxId.style.display = "none";
+      // Find the first UTXO matching the expected collateral size
+      const cCollaUTXO = mempool.getConfirmed().find(cUTXO => cUTXO.sats === cChainParams.current.collateralInSats);
+      const balance = getBalance(false);
+      if (cCollaUTXO) {
+	if (strMasternodeJSON) {
+	  const cMasternode = new Masternode(JSON.parse(localStorage.getItem("masternode")));
+	  const cMasternodeData = await refreshMasternodeData(cMasternode);
+	  domMnDashboard.style.display = "";
+	} else {
+	  domMnTxId.style.display = "none";
+          domAccessMasternode.style.display = "block";
+	}
+      } else if (balance < cChainParams.current.collateralInSats) {
+        // The user needs more funds
+        domMnTextErrors.innerHTML = "You need <b>" + ((cChainParams.current.collateralInSats - balance) / COIN) + " more " + cChainParams.current.TICKER + "</b> to create a Masternode!";
+      } else {
+        // The user has the funds, but not an exact collateral, prompt for them to create one
+        domCreateMasternode.style.display = "block";
+        domMnTxId.style.display = "none";
+        domMnTxId.innerHTML = "";
+      }
+    } else {
+      domMnTxId.style.display = "none";
+      domMnTxId.innerHTML = "";
+      domMnAccessMasternodeText.innerHTML = masternodeHDAccessText;
+      
+      // First UTXO for each address in HD
+      const mapCollateralAddresses = new Map();
+      
+      // Aggregate all valid Masternode collaterals into a map of Address <--> Collateral
+      for (const cUTXO of mempool.getConfirmed()) {
+        if (cUTXO.sats !== cChainParams.current.collateralInSats) continue;
+        mapCollateralAddresses.set(cUTXO.path, cUTXO);
+      }
+      const fHasCollateral = mapCollateralAddresses.size > 0;
+      
+      // If there's no loaded MN, but valid collaterals, display the configuration screen
+      if (!strMasternodeJSON && fHasCollateral) {
+        domMnTxId.style.display = "block";
+        domAccessMasternode.style.display = "block";
+	
+        for (const [key, value] of mapCollateralAddresses) {
+          const option = document.createElement('option');
+          option.value = key;
+          option.innerText = await masterKey.getAddress(key);
+          domMnTxId.appendChild(option);
+        }
+      }
+      
+      // If there's no collateral found, display the creation UI
+      if (!fHasCollateral) domCreateMasternode.style.display = "block";
+      
+      // If we have a collateral and a loaded Masternode, display the Dashboard
+      if (fHasCollateral && strMasternodeJSON) {
+        const cMasternode = new Masternode(JSON.parse(strMasternodeJSON));
+        // Refresh the display
+        refreshMasternodeData(cMasternode);
+        domMnDashboard.style.display = "";
+      }
+    }
+  }
+  
+  async function refreshMasternodeData(cMasternode, fAlert = false) {
+    const cMasternodeData = await cMasternode.getFullData();
+    if (debug) console.log(cMasternodeData);
+
+    // If we have MN data available, update the dashboard
+    if (cMasternodeData && cMasternodeData.status !== "MISSING") {
+      domMnTextErrors.innerHTML = "";
+      domMnProtocol.innerText = `(${sanitizeHTML(cMasternodeData.version)})`;
+      domMnStatus.innerText = sanitizeHTML(cMasternodeData.status);
+      domMnNetType.innerText = sanitizeHTML(cMasternodeData.network.toUpperCase());
+      domMnNetIP.innerText = cMasternode.addr;
+      domMnLastSeen.innerText = new Date(cMasternodeData.lastseen * 1000).toLocaleTimeString();
+    }
+
+    if (cMasternodeData.status === "MISSING") {
+      domMnTextErrors.innerHTML = "Masternode is currently <b>OFFLINE</b>";
+      createAlert('warning', 'Your masternode is offline, we will try to start it', 6000);
+      // try to start the masternode
+      const started = await cMasternode.start();
+      if (started) {
+        domMnTextErrors.innerHTML = "Masternode successfully started!";
+        createAlert('success', 'Masternode successfully started!, it will be soon online', 6000);
+        localStorage.setItem("masternode", JSON.stringify(cMasternode));
+      } else {
+        domMnTextErrors.innerHTML = "We couldn't start your masternode";
+        createAlert('warning', 'We could not start your masternode', 6000);
+      }
+    } else if (cMasternodeData.status === "ENABLED" || cMasternodeData.status === "PRE_ENABLED") {
+      if (fAlert) createAlert('success', `Your masternode status is <b> ${sanitizeHTML(cMasternodeData.status)} </b>`, 6000);
+      localStorage.setItem("masternode", JSON.stringify(cMasternode));
+    } else if (cMasternodeData.status === "REMOVED") {
+      domMnTextErrors.innerHTML = "Masternode is currently <b>REMOVED</b>";
+      if (fAlert) createAlert('warning', 'Your masternode is in <b>REMOVED</b> state', 6000);
+    } else { // connection problem
+      domMnTextErrors.innerHTML = "Unable to connect!";
+      if (fAlert) createAlert('warning', 'Unable to connect!', 6000);
+    }
+
+    // Return the data in case the caller needs additional context
+    return cMasternodeData;
+  }
 
     function refreshChainData() {
       // If in offline mode: don't sync ANY data or connect to the internet
       if (!networkEnabled) return console.warn("Offline mode active: For your security, the wallet will avoid ALL internet requests.");
-      if (!publicKeyForNetwork) return;
+      if (!masterKey) return;
 
       // Play reload anim
       domBalanceReload.classList.add("playAnim");
@@ -1174,33 +2417,29 @@
     // A safety mechanism enabled if the user attempts to leave without encrypting/saving their keys
     const beforeUnloadListener = (evt) => {
       evt.preventDefault();
-      createAlert("warning", "<b>Save your wallet!</b><br>Dashboard ➜ Set Password", 10000);
+      // Disable Save your wallet warning on unload
+      if( !cChainParams.current.isTestnet ) createAlert("warning", ALERTS.SAVE_WALLET_PLEASE, [], 10000);
       // Most browsers ignore this nowadays, but still, keep it 'just incase'
-      return evt.returnValue = "Please ENCRYPT and/or BACKUP your keys before leaving, or you may lose them!";
+      return evt.returnValue = BACKUP_OR_ENCRYPT_WALLET;
     };
 
     window.onload = (() => {
       // Configure Identicon
       jdenticon.configure();
 
-      // Configure payment processor
+      // Customise the UI if a saved wallet exists
+      if (hasEncryptedWallet()) {
+        // Hide the 'Generate wallet' buttons
+        domGenerateWallet.style.display = "none";
+        domGenVanityWallet.style.display = "none";
+
+        // Display the password unlock upfront
+        accessOrImportWallet();
+      }
+
+      // Payment processor redirect
       if (requestTo && requestAmount) {
-        // Open 'Create Transaction' menu
-        domTxTab.click();
-        if (domSimpleTXs.style.display === 'none')
-          domSimpleTXsDropdown.click();
-
-        // Pre-fill inputs
-        domAddress1s.value = requestTo;
-        domValue1s.value   = requestAmount;
-
-        // Payment request 'desc' is optional
-        if (urlParams.has('desc')) {
-          domReqDisplay.style.display = 'block';
-          domReqDesc.value = urlParams.get('desc');
-        } else {
-          domReqDisplay.style.display = 'none';
-        }
+        guiPreparePayment(requestTo, requestAmount, urlParams.has('desc') ? urlParams.get('desc') : "");
       }
 
       // If allowed by settings: submit a simple 'hit' (app load) to Labs Analytics
@@ -1208,7 +2447,8 @@
     });
 
     setInterval(refreshChainData, 15000);
-    domPrefix.value = PUBKEY_PREFIX;
+    domPrefix.value = ""
+    domPrefixNetwork.innerText = cChainParams.current.PUBKEY_PREFIX.join(' or ');
   </script>
 
 </body>
@@ -1220,18 +2460,14 @@
 <script type="text/javascript" src="scripts/libs/crypto-sha256-hmac.js"></script>
 <script type="text/javascript" src="scripts/libs/ripemd160.js"></script>
 <script type="text/javascript" src="scripts/libs/jsbn.js"></script>
-<script type="text/javascript" src="scripts/libs/ellipticcurve.js"></script>
 <script type="text/javascript" src="scripts/libs/script.js"></script>
 <script type="text/javascript" src="scripts/libs/qrcode.js"></script>
 <script type="text/javascript" src="scripts/libs/sha256.js"></script>
 <script type="text/javascript" src="scripts/libs/bn.js"></script>
-<script type="text/javascript" src="scripts/libs/secp256k1.js"></script>
 <script type="text/javascript" src="scripts/libs/noble-secp256k1.js"></script>
 <script type="text/javascript" src="scripts/bitTrx.js"></script>
-
-<script>
-  // Throw the Secp256k1 lib as a global after import
-  const nSecp256k1 = nobleSecp256k1.default;
-</script>
+<script type="text/javascript" src="scripts/libs/ledger.js"></script>
+<script type="text/javascript" src="scripts/libs/bip39.js"></script>
+<script type="text/javascript" src="scripts/masternode.js"></script>
 
 </html>

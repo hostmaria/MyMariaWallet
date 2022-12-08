@@ -47,12 +47,12 @@ var translation = {
 
     // Footer
     footerDonateLink: "",           //Donate!
-    footerBuiltWithPivxLabs: "",    //Built with 💜 by PIVX Labs
+    footerBuiltWithPivxLabs: "",    //Built with 💜 by MARIA Labs
     footerGithubLink: "",           //MyMARIAWallet
 
     // Intro
     title: "",                      //Welcome to
-    titleName: "",                  //My PIVX Wallet!
+    titleName: "",                  //My MARIA Wallet!
 
     cardOneTitle: "",               //Be your own Bank!
     cardOneDesc: "",                //MyMARIAWallet has <b>no custody</b> over your funds. You are in full ownership of your keys and your MARIA. 
@@ -63,7 +63,7 @@ var translation = {
     cardTwoLink: "",                //Know more
 
     cardThreeTitle: "",             //Don't trust, verify!
-    cardThreeDesc: "",              //MyMARIAWallet is completely open-source, available on the PIVX Labs github.
+    cardThreeDesc: "",              //MyMARIAWallet is completely open-source, available on the MARIA Labs github.
     cardThreeLink: "",              //Know more
 
     cardFourTitle: "",              //For the community
@@ -76,22 +76,22 @@ var translation = {
     dashboardTitle: "",             //Dashboard
     dCardOneTitle: "",              //Create a
     dCardOneSubTitle: "",           //New Wallet
-    dCardOneDesc: "",               //This will create a new, random PIVX wallet that will contain no initial funds, you may transfer to-and-from this wallet with ease.
+    dCardOneDesc: "",               //This will create a new, random MARIA wallet that will contain no initial funds, you may transfer to-and-from this wallet with ease.
     dCardOneButton: "",             //Create A New Wallet
 
     dCardTwoTitle: "",              //Create a new
     dCardTwoSubTitle: "",           //Vanity Wallet
-    dCardTwoDesc: "",               //This will create a PIVX wallet with a customized prefix of your choosing, requiring more processing power to generate such addresses, it is recommended to generate a prefix of less than 6 characters, for example: "DAD" is a possible address prefix.
+    dCardTwoDesc: "",               //This will create a MARIA wallet with a customized prefix of your choosing, requiring more processing power to generate such addresses, it is recommended to generate a prefix of less than 6 characters, for example: "DAD" is a possible address prefix.
     dCardTwoButton: "",             //Create A Vanity Wallet
 
     dCardThreeTitle: "",            //Access your
     dCardThreeSubTitle: "",         //Hardware Wallet
-    dCardThreeDesc: "",             //This will help managing the PIVX wallet on your ledger. Notice that the private key will remain safe in your hardware device
+    dCardThreeDesc: "",             //This will help managing the MARIA wallet on your ledger. Notice that the private key will remain safe in your hardware device
     dCardThreeButton: "",           //Access my hardware wallet
 
     dCardFourTitle: "",             //Go to
     dCardFourSubTitle: "",          //My Wallet
-    dCardFourDesc: "",              //This will import a PIVX wallet that you hold via it's private key, loading the address and pulling your existing balance, if any, from an explorer node.
+    dCardFourDesc: "",              //This will import a MARIA wallet that you hold via it's private key, loading the address and pulling your existing balance, if any, from an explorer node.
     dCardFourSubDesc:"",            //*Note: MPW developers can NOT access your wallet, this wallet runs purely in YOUR browser using JavaScript.
     dCardFourButtonI:"",            //Import Wallet
     dCardFourButtonA:"",            //Access My Wallet
@@ -132,7 +132,7 @@ var translation = {
     // Settings
     settingsExplorer:"",            //Choose an explorer
     settingsLanguage:"",            //Choose an Language:
-    settingsPivxNode:"",            //Choose a PIVX node:
+    settingsPivxNode:"",            //Choose a MARIA node:
     settingsAnalytics:"",           //Choose your analytics contribution level:
     settingsToggleDebug:"",         //Toggle Debug Mode
     settingsToggleSync:"",          //Toggle Sync Mode
@@ -150,7 +150,7 @@ var translation = {
     FAILED_TO_IMPORT: "",            //<b>Failed to import!</b> Invalid password,
     UNSUPPORTED_CHARACTER:  "",      //"The character '{char}' is unsupported in addresses! (Not Base58 compatible)"
     UNSUPPORTED_WEBWORKERS: "",      //This browser doesn\'t support Web Workers (multi-threaded JS), unfortunately you cannot generate Vanity wallets!
-    INVALID_ADDRESS: "",             //<b>Invalid PIVX address!</b><br> {address}
+    INVALID_ADDRESS: "",             //<b>Invalid MARIA address!</b><br> {address}
     TESTNET_ENCRYPTION_DISABLED: "", //"<b>Testnet Mode is ON!</b><br>Wallet encryption disabled",
     PASSWORD_TOO_SMALL: "",          //"That password is a little short!<br>Use at least <b>{MIN_PASS_LENGTH} characters.</b>",
     PASSWORD_DOESNT_MATCH: "",       //'Your passwords don\'t match!',
@@ -163,8 +163,8 @@ var translation = {
     CONFIRM_TRANSACTION_H_WALLET:"", //"<b>Confirm your transaction</b><br>Confirm the TX on your {strHardwareName}",
     SUCCESS_STAKING_ADDR_SET: "",    //'<b>Staking Address set!</b><br>Now go ahead and stake!',
     STAKE_NOT_SEND: "",              //'Here, use the <b>Stake</b> screen, not the Send screen!',
-    BAD_ADDR_LENGTH: "",             //'<b>Invalid PIVX address!<b><br>Bad length ({addressLength})',
-    BAD_ADDR_PREFIX: "",             //'<b>Invalid PIVX address!<b><br>Bad prefix {address} (Should start with {addressPrefix})',
+    BAD_ADDR_LENGTH: "",             //'<b>Invalid MARIA address!<b><br>Bad length ({addressLength})',
+    BAD_ADDR_PREFIX: "",             //'<b>Invalid MARIA address!<b><br>Bad prefix {address} (Should start with {addressPrefix})',
     SENT_NOTHING: "",                //'You can\'t send \'nothing\'!',
     MORE_THEN_8_DECIMALS: "",        //'8 decimal limit exceeded',
     SAVE_WALLET_PLEASE: "",          //<b>Save your wallet!</b><br>Dashboard ➜ Set Password,
@@ -179,7 +179,7 @@ var translation = {
     WALLET_OFFLINE_AUTOMATIC: "",       //"<b>Offline Mode is active!</b><br>Please disable Offline Mode for automatic transactions",
     WALLET_UNLOCK_IMPORT: "",           //"Please {unlock} your wallet before sending transactions!",
     WALLET_FIREFOX_UNSUPPORTED: "",     //"<b>Firefox doesn't support this!</b><br>Unfortunately, Firefox does not support hardware wallets",
-    WALLET_HARDWARE_WALLET: "",         //"<b>Hardware wallet ready!</b><br>Please keep your {hardwareWallet} plugged in, unlocked, and in the PIVX app",
+    WALLET_HARDWARE_WALLET: "",         //"<b>Hardware wallet ready!</b><br>Please keep your {hardwareWallet} plugged in, unlocked, and in the MARIA app",
     WALLET_CONFIRM_L: "",               //"Confirm the import on your Ledger",
     WALLET_NO_HARDWARE: "",             //"<b>No device available</b><br>Couldn't find a hardware wallet; please plug it in and unlock!",
     WALLET_HARDWARE_CONNECTION_LOST: "",// "<b>Lost connection to {hardwareWallet} </b><br>It seems the {hardwareWalletProductionName} was unplugged mid-operation, oops!",

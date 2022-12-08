@@ -112,11 +112,10 @@
               // A list of Labs-trusted explorers
               Explorers         : [
                   // Display name      Blockbook-compatible API base
-                  { name: "rockdev",   url: "https://explorer.rockdev.org" },
-                  { name: "zkBitcoin", url: "https://zkbitcoin.com" }
+                  { name: "maria",   url: "https://explorer.mariacoin.com" }
               ],
 	      Nodes: [
-		  { name: "duddino", url: "https://rpc.duddino.com/mainnet"}
+		  { name: "mariarpc", url: "https://rpc.mariacoin.com/mainnet"}
 	      ],
 	      Consensus         : {
                   // Network upgrades
@@ -401,7 +400,7 @@
 
                   <div class="col-md-12 dashboard-title">
                     <h3 class="pivx-bold-title-smaller"><span data-i18n="dCardOneTitle">Create a</span> <div data-i18n="dCardOneSubTitle">New Wallet</div></h3>
-                    <p data-i18n="dCardOneDesc">This will create a new, random PIVX wallet that will contain no initial funds, you may transfer to-and-from this wallet with ease.</p>
+                    <p data-i18n="dCardOneDesc">This will create a new, random MARIA wallet that will contain no initial funds, you may transfer to-and-from this wallet with ease.</p>
                   </div>
 
 
@@ -497,7 +496,7 @@
                   <div class="col-md-12 dashboard-title">
                     <h3 class="pivx-bold-title" style="font-size:38px;"><span data-i18n="dCardTwoTitle" >Create a new</span> <div data-i18n="dCardTwoSubTitle">Vanity Wallet</div></h3>
                     <span class="badge badge-warning" data-i18n="experimental" >Experimental</span>
-                    <p data-i18n="dCardTwoDesc">This will create a PIVX wallet with a customized prefix of your choosing, requiring more processing power to generate such addresses, it is recommended to generate a prefix of less than 6 characters, for example: "DAD" is a possible address prefix.</p>
+                    <p data-i18n="dCardTwoDesc">This will create a MARIA wallet with a customized prefix of your choosing, requiring more processing power to generate such addresses, it is recommended to generate a prefix of less than 6 characters, for example: "DAD" is a possible address prefix.</p>
                     <span style="opacity: 0.75; font-size: small;">*Note: Generated addresses will automatically be preceded by the network prefix: <b id='prefixNetwork'></b></span></p>
                   </div>
 
@@ -530,7 +529,7 @@
 
                   <div class="col-md-12 dashboard-title">
                     <h3 class="pivx-bold-title" style="font-size:38px;"><span data-i18n="dCardThreeTitle">Access your</span><div data-i18n="dCardThreeSubTitle">Hardware Wallet</div></h3>
-                    <p data-i18n="dCardThreeDesc">This will help managing the PIVX wallet on your ledger. Notice that the private key will remain safe in your hardware device</p>
+                    <p data-i18n="dCardThreeDesc">This will help managing the MARIA wallet on your ledger. Notice that the private key will remain safe in your hardware device</p>
                   </div>
 
                   <button class="pivx-button-big" onclick="importWallet({isHardwareWallet: true})">
@@ -560,7 +559,7 @@
 
                   <div class="col-md-12 dashboard-title">
                     <h3 class="pivx-bold-title-smaller"><span data-i18n="dCardFourTitle">Go to</span> <div data-i18n="dCardFourSubTitle">My Wallet</div></h3>
-                    <p data-i18n="dCardFourDesc">This will import a PIVX wallet that you hold via it's private key, loading the address and pulling your existing balance, if any, from an explorer node.
+                    <p data-i18n="dCardFourDesc">This will import a MARIA wallet that you hold via it's private key, loading the address and pulling your existing balance, if any, from an explorer node.
                       <br>
                       <span style="opacity: 0.75; font-size: small;" data-i18n="dCardFourSubDesc">*Note: MPW developers can NOT access your wallet, this wallet runs purely in YOUR browser using JavaScript.</span>
                     </p>
@@ -848,7 +847,7 @@
                   <h4 id="signed-raw" data-i18n="sendSignedRawTx">Signed Raw Transaction</h4>
                   <textarea rows="15" cols="70" id="rawTrx"></textarea>
                   <p><span data-i18n="sendSignedTutorial">Don't understand how this works?</span> <a target='_blank'
-                      href='https://github.com/PIVX-Labs/MyMARIAWallet#transaction'><span data-i18n="sendSignedTutorialLink">Tutorial Here</span></a></p>
+                      href='https://github.com/MARIA-Labs/MyMARIAWallet#transaction'><span data-i18n="sendSignedTutorialLink">Tutorial Here</span></a></p>
                   <p data-i18n="sendSignedTutorialAdvInfo">Advanced Details: <br>locktime is set to 0, sequence is set to max. SIGHASH_ALL option is chosen
                       for signing raw Transaction.</p>
                 </div>
@@ -868,7 +867,7 @@
               </select>
               <br>
 	      
-              <label for="node" data-i18n="settingsPivxNode">Choose a PIVX node:</label>
+              <label for="node" data-i18n="settingsPivxNode">Choose a MARIA node:</label>
               <br>
               <select id="node" class="form-control" name="node">
                 <!-- Populated via JS at DOM load (settings.js) -->
@@ -947,7 +946,7 @@
     const mempool = new Mempool();
     let arrRewards = [];
     let cachedBlockCount = 0;
-    //                        PIVX Labs' Cold Pool
+    //                        MARIA Labs' Cold Pool
     let cachedColdStakeAddr = "SdgQDpS8jDRJDX8yK8m9KnTMarsE84zdsy";
 
     // Cached DOM elements

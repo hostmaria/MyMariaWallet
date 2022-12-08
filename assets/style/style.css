@@ -257,7 +257,7 @@ input::-moz-focus-inner {
 .seed-phrase {
     font-family: mono;
     background-color: #00000014;
-    color: #8e21ff;
+    color: #437342;
     margin: 10px;
     padding: 10px;
     border-radius: 8px;
@@ -271,7 +271,7 @@ input::-moz-focus-inner {
 .inline-address {
     font-family: mono;
     background-color: #00000014;
-    color: #8e21ff;
+    color: #437342;
     margin: 10px;
     padding: 3px;
     border-radius: 8px;

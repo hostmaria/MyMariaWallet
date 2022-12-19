@@ -5,11 +5,7 @@
 // Basic JavaScript BN library - subset useful for RSA encryption.
 
 // Bits per digit
-var dbits;
-
-// JavaScript engine analysis
-var canary = 0xdeadbeefcafe;
-var j_lm = ((canary&0xffffff)==0xefcafe);
+const dbits = 26;
 
 // (public) Constructor
 function BigInteger(a,b,c) {
@@ -77,34 +73,18 @@ function am3(i,x,w,j,c,n) {
 
 // wtf?
 BigInteger.prototype.am = am1;
-dbits = 26;
-
-/*
-if(j_lm && (navigator.appName == "Microsoft Internet Explorer")) {
-  BigInteger.prototype.am = am2;
-  dbits = 30;
-}
-else if(j_lm && (navigator.appName != "Netscape")) {
-  BigInteger.prototype.am = am1;
-  dbits = 26;
-}
-else { // Mozilla/Netscape seems to prefer am3
-  BigInteger.prototype.am = am3;
-  dbits = 28;
-}
-*/
 
 BigInteger.prototype.DB = dbits;
 BigInteger.prototype.DM = ((1<<dbits)-1);
-var DV = BigInteger.prototype.DV = (1<<dbits);
+const DV = BigInteger.prototype.DV = (1<<dbits);
 
-var BI_FP = 52;
+const BI_FP = 52;
 BigInteger.prototype.FV = Math.pow(2,BI_FP);
 BigInteger.prototype.F1 = BI_FP-dbits;
 BigInteger.prototype.F2 = 2*dbits-BI_FP;
 
 // Digit conversions
-var BI_RM = "0123456789abcdefghijklmnopqrstuvwxyz";
+const BI_RM = "0123456789abcdefghijklmnopqrstuvwxyz";
 var BI_RC = new Array();
 var rr,vv;
 rr = "0".charCodeAt(0);
@@ -526,7 +506,7 @@ Montgomery.prototype.reduce = montReduce;
 Montgomery.prototype.mulTo = montMulTo;
 Montgomery.prototype.sqrTo = montSqrTo;
 
-// (protected) true iff this is even
+// (protected) true if this is even
 function bnpIsEven() { return ((this.t>0)?(this[0]&1):this.s) == 0; }
 
 // (protected) this^e, e < 2^32, doing sqr and mul with "r" (HAC 14.79)

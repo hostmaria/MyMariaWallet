@@ -3,7 +3,7 @@
 </h2>
 
 <p align="center">
-  <a href="https://mariawallet.com/">Production</a> (Stable) | <a href="https://pivx-labs.github.io/MyPIVXWallet/">Bleeding-Edge</a> (Unstable)
+  <a href="https://mariawallet.com/">Production</a> (Stable) | <a href="https://mariawallet.com">Bleeding-Edge</a> (Unstable)
 </p>
 
 ---
@@ -51,7 +51,7 @@ Alongside total codebase availability, MMW allows you to totally bunker-down, wi
 
 ## By the Community, for the Community
 
-MMW is built with love by [MARIA Labs](https://github.com/PIVX-Labs), a micro-DAO of [awesome people](https://github.com/PIVX-Labs/MyPIVXWallet/graphs/contributors) that build both FOSS and Proprietary software for the MARIA community to enjoy.
+MMW is built with love by [MARIA Labs](https://github.com/PIVX-Labs), a micro-DAO of [awesome people](https://github.com/PIVX-Labs/MyMARIAWallet/graphs/contributors) that build both FOSS and Proprietary software for the MARIA community to enjoy.
 
 The mission of MARIA Labs is to accelerate the adoption & growth of MARIA as a currency, using awesomeness. Join the [MARIA Labs Discord](https://discord.gg/v57eCP4MMx) to meet us!
 

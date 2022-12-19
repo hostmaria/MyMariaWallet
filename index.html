@@ -2432,8 +2432,6 @@
         guiPreparePayment(requestTo, requestAmount, urlParams.has('desc') ? urlParams.get('desc') : "");
       }
 
-      // If allowed by settings: submit a simple 'hit' (app load) to Labs Analytics
-      submitAnalytics('hit');
     });
 
     setInterval(refreshChainData, 15000);

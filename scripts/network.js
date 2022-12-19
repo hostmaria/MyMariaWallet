@@ -188,30 +188,3 @@ var getUTXOsHeavy = async function() {
     fHeavySyncing = false;
   }
 }
-
-// MARIA Labs Analytics: if you are a user, you can disable this FULLY via the Settings.
-// ... if you're a developer, we ask you to keep these stats to enhance upstream development,
-// ... but you are free to completely strip MPW of any analytics, if you wish, no hard feelings.
-var submitAnalytics = function (strType, cData = {}) {
-    if (!networkEnabled) return;
-
-    // Limit analytics here to prevent 'leakage' even if stats are implemented incorrectly or forced
-    let i = 0, arrAllowedKeys = [];
-    for (i; i < cAnalyticsLevel.stats.length; i++) {
-      const cStat = cAnalyticsLevel.stats[i];
-      arrAllowedKeys.push(cStatKeys.find(a => STATS[a] === cStat));
-    }
-
-    // Check if this 'stat type' was granted permissions
-    if (!arrAllowedKeys.includes(strType)) return false;
-
-    // Format
-    const cStats = {'type': strType, ...cData};
-
-    // Send to Labs Analytics
-    const request = new XMLHttpRequest();
-    request.open('POST', "https://scpscan.net/mpw/statistic", true);
-    request.setRequestHeader('Content-Type', 'application/json');
-    request.send(JSON.stringify(cStats));
-    return true;
-}

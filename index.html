@@ -874,14 +874,6 @@
               </select>
               <br>
 
-              <label for="analytics" data-i18n="settingsAnalytics">Choose your analytics contribution level:</label>
-              <br>
-              <select id="analytics" class="form-control" name="analytics">
-                <!-- Populated via JS at DOM load (settings.js) -->
-              </select>
-              <div id='analyticsDescriptor'></div>
-              <br>
-
               <button class="pivx-button-big" onclick="toggleDebug()">
                               <span class="buttoni-icon"><i class="fas fa-bug fa-tiny-margin"></i></span>
                               <span class="buttoni-text" data-i18n="settingsToggleDebug">Toggle Debug Mode</span>
@@ -1024,7 +1016,6 @@
     const domPrivKeyPassword = document.getElementById("privateKeyPassword");
     const domAvailToDelegate = document.getElementById('availToDelegate');
     const domAvailToUndelegate = document.getElementById('availToUndelegate');
-    const domAnalyticsDescriptor = document.getElementById('analyticsDescriptor');
     const domStakingRewardsList = document.getElementById('staking-rewards-content');
     const domStakingRewardsTitle = document.getElementById('staking-rewards-title');
     const domMnemonicModalContent = document.getElementById("ModalMnemonicContent");
